@@ -16,7 +16,6 @@ local es = {
     -- bars and reminder
     ["Apicarao!! -- drag to move, right-click: preferences"] = "Apicarao!! -- arrastra para mover, clic derecho: preferencias",
     ["Apicarao!! reminders -- drag to move"] = "Avisos de Apicarao!! -- arrastra para mover",
-    ["Poison and reagent reminders show here"] = "Aquí salen los avisos de venenos y componentes",
     ["Main hand"] = "Mano principal",
     ["Off hand"] = "Mano secundaria",
     ["%s: no poison"] = "%s: sin veneno",
@@ -60,6 +59,7 @@ local es = {
     ["Reagents"] = "Componentes",
     ["Warn when Flash Powder or Blinding Powder run low"] = "Avisar cuando quede poco Polvo destellante o Polvo cegador",
     ["Fewer than %d"] = "Menos de %d",
+    ["Reminder icon size: %d"] = "Tamaño de los iconos de aviso: %d",
     ["Reset positions"] = "Restablecer posiciones",
     ["Reset everything"] = "Restablecer todo",
     ["Show chat messages at startup"] = "Mostrar mensajes en el chat al iniciar",

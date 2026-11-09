@@ -82,13 +82,21 @@ describe("Reminder", function()
         ns.char.locked = true
     end)
 
-    it("a weapon without poison: on screen, in the chat and a sound, once", function()
+    local function printed(text)
+        for _, line in ipairs(WowMock.printed) do
+            if line:find(text, 1, true) then return true end
+        end
+        return false
+    end
+
+    it("a weapon without poison: its icon with a red X, a chat line and a sound, once", function()
         ns.Alerts_Update()
         assert.is_true(ns.Alerts_Frame():IsShown())
-        assert.is_not_nil(WowMock.FindByText("Main hand: no poison"))
-        local printed, sounds = #WowMock.printed, #WowMock.sounds
+        assert.are.same({ { badge = "", cross = true } }, ns.Alerts_Shown())
+        assert.is_true(printed("Main hand: no poison"))
+        local lines, sounds = #WowMock.printed, #WowMock.sounds
         ns.Alerts_Update()
-        assert.are.equal(printed, #WowMock.printed)
+        assert.are.equal(lines, #WowMock.printed)
         assert.are.equal(sounds, #WowMock.sounds)
         assert.is_true(sounds >= 1)
     end)
@@ -99,10 +107,30 @@ describe("Reminder", function()
         assert.is_false(ns.Alerts_Frame():IsShown())
     end)
 
-    it("about to end: says how long is left", function()
+    it("about to end: the time left over the icon, no X", function()
         WowMock.enchants = { mh = { 125000, 0 } }
         ns.Alerts_Update()
-        assert.is_not_nil(WowMock.FindByText("Main hand: poison ends in 2:05"))
+        assert.are.same({ { badge = "2:05", cross = false } }, ns.Alerts_Shown())
+        assert.is_true(printed("Main hand: poison ends in 2:05"))
+        WowMock.enchants = { mh = { 42000, 0 } }
+        ns.Alerts_Update()
+        assert.are.equal("42", ns.Alerts_Shown()[1].badge)
+    end)
+
+    it("the icons take the size from the settings, side by side", function()
+        WowMock.inventory[17] = 100
+        ns.char.alertIconSize = 60
+        ns.Alerts_Update()
+        assert.are.equal(2, #ns.Alerts_Shown())
+        assert.are.equal(60 * 2 + 10, ns.Alerts_Frame():GetWidth())
+        assert.are.equal(60, ns.Alerts_Frame():GetHeight())
+    end)
+
+    it("unlocked with nothing to warn about: sample icons to place it", function()
+        WowMock.enchants = { mh = { 30 * 60000, 0 } }
+        ns.char.locked = false
+        ns.Alerts_Update()
+        assert.are.equal(2, #ns.Alerts_Shown())
     end)
 
     it("in combat, quiet unless told otherwise", function()
@@ -121,7 +149,8 @@ describe("Reminder", function()
         WowMock.spells = { [2094] = true }
         WowMock.items[5530] = { count = 1 }
         ns.Alerts_Update()
-        assert.is_not_nil(WowMock.FindByText("Blinding Powder: 1 left"))
+        assert.are.same({ { badge = "1", cross = false } }, ns.Alerts_Shown())
+        assert.is_true(printed("Blinding Powder: 1 left"))
     end)
 end)
 

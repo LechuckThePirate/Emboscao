@@ -45,6 +45,8 @@ ns.DEFAULTS = {
     -- reagents of the spells you know (Vanish, Blind)
     reagentWarn = true,
     reagentMin = 5,
+
+    alertIconSize = 56,       -- the reminder's icons
 }
 
 local SWITCHABLE = {
@@ -56,7 +58,7 @@ local SWITCHABLE = {
     showTimers = true, timerHeight = true, timerSliceAndDice = true, timerRupture = true, timerGarrote = true,
     timerExposeArmor = true,
     poisonWarn = true, poisonMinutes = true, poisonCharges = true, poisonOffHand = true, poisonInCombat = true,
-    poisonSound = true, reagentWarn = true, reagentMin = true,
+    poisonSound = true, reagentWarn = true, reagentMin = true, alertIconSize = true,
 }
 
 local function deepCopy(value)

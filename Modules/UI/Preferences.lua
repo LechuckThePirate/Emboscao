@@ -4,7 +4,7 @@ local L = ns.L
 -- Preferences window (/apicarao, or right-click on the bars or the reminder while they are unlocked). Two
 -- columns: the bars on the left, timers / poisons / reagents on the right. While it is open the bars and the
 -- reminder stay visible (and the combo points count up) so every change can be seen.
-local WIDTH, HEIGHT = 680, 700
+local WIDTH, HEIGHT = 680, 760
 local COL_X = { 16, 352 }
 local SLIDER_W = 290
 local prefs, refreshPrefs
@@ -240,6 +240,7 @@ local function create()
     header(L["Reagents"])
     check(L["Warn when Flash Powder or Blinding Powder run low"], "reagentWarn")
     slider(1, 20, 1, "reagentMin", function(v) return L["Fewer than %d"]:format(v) end)
+    slider(24, 128, 4, "alertIconSize", function(v) return L["Reminder icon size: %d"]:format(v) end)
 
     y = y - 10
     makeButton(prefs, x, y, 142, L["Reset positions"], function()
