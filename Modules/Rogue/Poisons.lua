@@ -6,19 +6,24 @@ local _, ns = ...
 ns.SLOT_MAIN_HAND, ns.SLOT_OFF_HAND = 16, 17
 ns.POISONS_LEVEL = 20
 local WEAPON_CLASS = 2
+-- The weapon subclasses a rogue can poison: one-handed axes, maces and swords, fist weapons and daggers. Not a
+-- fishing pole (20), a miscellaneous "weapon" (14) or anything else in the hands.
+local POISONABLE = { [0] = true, [4] = true, [7] = true, [13] = true, [15] = true }
 
 local function itemClass(itemID)
     local getInfo = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
     if not getInfo then return nil end
-    return (select(6, getInfo(itemID)))
+    local _, _, _, _, _, class, subclass = getInfo(itemID)
+    return class, subclass
 end
 
--- A weapon in that slot (not a shield or an off-hand item). Unknown class: take it as a weapon.
+-- A weapon that takes poisons in that slot. Unknown class (no item API): take it as one.
 function ns.Poisons_HasWeapon(slot)
     local id = GetInventoryItemID("player", slot)
     if not id then return false end
-    local class = itemClass(id)
-    return class == nil or class == WEAPON_CLASS
+    local class, subclass = itemClass(id)
+    if class == nil then return true end
+    return class == WEAPON_CLASS and POISONABLE[subclass] == true
 end
 
 -- One hand's state: "missing", "expiring" (less than `minutes` left), "charges" (fewer than `charges`, 0 = off)

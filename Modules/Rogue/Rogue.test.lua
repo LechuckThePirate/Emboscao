@@ -111,6 +111,20 @@ describe("Poisons", function()
         assert.are.equal(0, #ns.Poisons_Check(opts))
     end)
 
+    it("only weapons that take poisons: not a fishing pole", function()
+        WowMock.items[100] = { classID = 2, subclassID = 20 }
+        WowMock.items[101] = { classID = 2, subclassID = 7 }
+        local issues = ns.Poisons_Check(opts)
+        assert.are.equal(1, #issues)
+        assert.are.equal(17, issues[1].slot)
+        for _, subclass in ipairs({ 0, 4, 7, 13, 15 }) do
+            WowMock.items[100] = { classID = 2, subclassID = subclass }
+            assert.is_true(ns.Poisons_HasWeapon(16))
+        end
+        WowMock.items[100] = { classID = 2, subclassID = 14 }
+        assert.is_false(ns.Poisons_HasWeapon(16))
+    end)
+
     it("all fine: no issues", function()
         WowMock.enchants = { mh = { 30 * 60000, 40 }, oh = { 30 * 60000, 40 } }
         assert.are.equal(0, #ns.Poisons_Check(opts))

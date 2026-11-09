@@ -355,7 +355,7 @@ GetInventoryItemID = function(_, slot) return WowMock.inventory[slot] end
 GetInventoryItemTexture = function(_, slot) return WowMock.inventory[slot] and ("tex" .. slot) or nil end
 GetItemInfoInstant = function(id)
     local item = WowMock.items[id]
-    if item then return id, nil, nil, nil, "icon" .. id, item.classID end
+    if item then return id, nil, nil, nil, "icon" .. id, item.classID, item.subclassID or 15 end
 end
 GetItemCount = function(id) local item = WowMock.items[id]; return item and item.count or 0 end
 IsPlayerSpell = function(id) return WowMock.spells[id] == true end
