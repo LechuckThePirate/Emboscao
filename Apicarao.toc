@@ -1,0 +1,26 @@
+## Interface: 16001
+## Title: Apicarao!!
+## Notes: Rogue toolset for WoW Forever: movable combo point bars, energy tick, Slice and Dice and bleed timers, poison and reagent reminders.
+## Notes-esES: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
+## Notes-esMX: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
+## Category: Combat
+## Category-esES: Combate
+## Category-esMX: Combate
+## Author: LechuckThePirate
+## Version: 0.1.0
+## X-License: GPL-3.0
+## IconTexture: Interface\Icons\Ability_Rogue_Eviscerate
+## SavedVariables: ApicaraoDB
+## SavedVariablesPerCharacter: ApicaraoCharDB
+
+Localization\Locale.lua
+Modules\Settings\Settings.lua
+Modules\Rogue\Combo.lua
+Modules\Rogue\Energy.lua
+Modules\Rogue\Poisons.lua
+Modules\Rogue\Reagents.lua
+Modules\Rogue\Auras.lua
+Modules\UI\Hud.lua
+Modules\UI\Alerts.lua
+Modules\UI\Preferences.lua
+Apicarao.lua

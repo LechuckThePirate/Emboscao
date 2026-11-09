@@ -1,0 +1,43 @@
+local _, ns = ...
+
+-- Energy and its 2-second tick. The game doesn't say when the next tick comes, so it is learned from the
+-- energy changes: a rise of about one tick (20, 40 with Adrenaline Rush, or less when it reaches the top)
+-- marks a tick. Other rises (Relentless Strikes' 25, Thistle Tea's 100) don't count.
+ns.ENERGY_TICK = 2
+local lastTick, lastEnergy
+
+local function energyType()
+    return Enum and Enum.PowerType and Enum.PowerType.Energy or 3
+end
+
+function ns.Energy_Get()
+    local cur = UnitPower and UnitPower("player", energyType()) or 0
+    local max = UnitPowerMax and UnitPowerMax("player", energyType()) or 100
+    if not max or max <= 0 then max = 100 end
+    return cur or 0, max
+end
+
+local function isTick(delta, energy, max)
+    if delta >= 18 and delta <= 22 then return true end
+    if delta >= 38 and delta <= 42 then return true end
+    return energy >= max and delta < 18 -- a tick cut short by the top
+end
+
+-- Called on every energy change, with the time (GetTime()).
+function ns.Energy_OnChange(energy, max, now)
+    if lastEnergy and energy > lastEnergy and isTick(energy - lastEnergy, energy, max) then
+        lastTick = now
+    end
+    lastEnergy = energy
+end
+
+-- How far into the current tick we are (0..1), or nil if no tick has been seen yet. Ticks keep coming at full
+-- energy, so it keeps cycling: that's what you pool energy with.
+function ns.Energy_TickProgress(now)
+    if not lastTick then return nil end
+    return ((now - lastTick) % ns.ENERGY_TICK) / ns.ENERGY_TICK
+end
+
+function ns.Energy_Reset()
+    lastTick, lastEnergy = nil, nil
+end

@@ -1,0 +1,42 @@
+name: CI
+
+# Tests (busted) and luacheck on every push and pull request, as in Completao. Lua 5.1: the game's version.
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run luacheck
+        uses: nebularg/actions-luacheck@d4137dd840545b28521ed21931e06913d93c0bc1 # v1
+        with:
+          files: Apicarao.lua Localization Modules Apicarao.test.lua test setupTests.lua
+          args: -q
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Lua 5.1
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13.1.0
+        with:
+          luaVersion: "5.1"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@1c4a92caecc8f6850f673cbadfd57b3e555417ce # v6.1.1
+
+      - name: Install busted
+        run: luarocks install busted
+
+      - name: Run tests
+        run: busted -p ".test.lua" .

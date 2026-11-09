@@ -1,0 +1,11 @@
+package-as: Apicarao
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+ignore:
+  - images
+  - tools
+  - test
+  - setupTests.lua
+  - "*.test.lua"
+  - .luacheckrc
