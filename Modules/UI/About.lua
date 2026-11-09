@@ -81,11 +81,33 @@ local function create()
     about:Hide()
 end
 
+-- Never on top of the preferences: beside them when they are open (to the right, or to the left when the screen has
+-- no room there), centered otherwise.
+function ns.About_Place()
+    if not about then return end
+    about:ClearAllPoints()
+    local prefs = ns.Prefs_Frame and ns.Prefs_Frame()
+    if not (prefs and prefs:IsShown()) then
+        about:SetPoint("CENTER")
+        return
+    end
+    local right = prefs:GetRight() or 0
+    local screen = UIParent:GetWidth() or 0
+    if right + 8 + about:GetWidth() <= screen then
+        about:SetPoint("TOPLEFT", prefs, "TOPRIGHT", 8, 0)
+    else
+        about:SetPoint("TOPRIGHT", prefs, "TOPLEFT", -8, 0)
+    end
+end
+
 function ns.About_Show()
     if not about then create() end
     about.version:SetText(L["Version %s"]:format(ns.Version()))
+    ns.About_Place()
     about:Show()
 end
+
+function ns.About_Frame() return about end
 
 function ns.About_IsShown()
     return about ~= nil and about:IsShown()

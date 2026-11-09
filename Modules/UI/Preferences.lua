@@ -282,6 +282,8 @@ local function create()
     prefs:SetScript("OnShow", function()
         refreshAll()
         ns.ApplySettings()
+        -- the About window, if open, moves out of the way
+        if ns.About_IsShown() then ns.About_Place() end
     end)
     prefs:SetScript("OnHide", function() ns.ApplySettings() end)
     prefs:Hide()
@@ -322,6 +324,8 @@ end
 function ns.Prefs_Refresh()
     if prefs and prefs:IsShown() then refreshPrefs() end
 end
+
+function ns.Prefs_Frame() return prefs end
 
 function ns.Prefs_IsShown()
     return prefs ~= nil and prefs:IsShown()
