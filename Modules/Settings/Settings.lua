@@ -42,6 +42,8 @@ ns.DEFAULTS = {
     poisonOffHand = true,     -- the off hand too
     poisonInCombat = false,   -- keep showing the reminder in combat
     poisonSound = true,
+    poisonMainType = "auto",  -- poison to apply on a click, per hand: "auto", "none" or a type (Modules/Rogue/PoisonTypes)
+    poisonOffType = "auto",
 
     -- reagents of the spells you know (Vanish, Blind)
     reagentWarn = true,
@@ -59,7 +61,7 @@ local SWITCHABLE = {
     showTimers = true, timerHeight = true, timerSliceAndDice = true, timerRupture = true, timerGarrote = true,
     timerExposeArmor = true,
     poisonWarn = true, poisonMinutes = true, poisonCharges = true, poisonOffHand = true, poisonInCombat = true,
-    poisonSound = true, reagentWarn = true, reagentMin = true, alertIconSize = true,
+    poisonSound = true, poisonMainType = true, poisonOffType = true, reagentWarn = true, reagentMin = true, alertIconSize = true,
 }
 
 local function deepCopy(value)

@@ -23,7 +23,12 @@ Addon files at the repo root, packaged as the folder `Apicarao` (`.pkgmeta`):
 - `Modules/Settings/` — per character or account-wide settings (same scheme as Aggreao), defaults in `ns.DEFAULTS`
 - `Modules/Rogue/` — game logic without UI: `Combo`, `Energy` (tick detection from energy rises), `Poisons`
   (`GetWeaponEnchantInfo`), `Reagents`, `Auras` (timers by localized spell name); tests in `Rogue.test.lua`
-- `Modules/UI/` — `Hud` (the bars), `Alerts` (the reminder), `Preferences` (two-column window, color picker for both
+- `Modules/Rogue/PoisonTypes.lua` — every Forever poison by type and rank (recipe spell, item, reagents; copied from
+  Fabrikao's Forever recipe data, skill line 40), what you carry / know / can make of each, and the type each hand gets
+  (`poisonMainType` / `poisonOffType`: "auto", "none" or a type)
+- `Modules/UI/` — `Hud` (the bars), `Alerts` (the reminder; each poison icon gets a hidden `SecureActionButtonTemplate`
+  over it with the macro `/use item:<poison>` + `/use <slot>`, live only locked and out of combat, hidden on
+  PLAYER_REGEN_DISABLED and never touched in combat), `Preferences` (two-column window, color picker for both
   the old and the 10.2.5+ `ColorPickerFrame` API); tests in `UI.test.lua`
 - `test/` (WoW API mock + local runner), `setupTests.lua`
 - `Icons/Apicarao.png` (256x256, transparent): drawn as `images/icon.svg` in the siblings' style with a purple background

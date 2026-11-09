@@ -4,7 +4,7 @@ local L = ns.L
 -- Preferences window (/apicarao, or right-click on the bars or the reminder while they are unlocked). Two
 -- columns: the bars on the left, timers / poisons / reagents on the right. While it is open the bars and the
 -- reminder stay visible (and the combo points count up) so every change can be seen.
-local WIDTH, HEIGHT = 680, 760
+local WIDTH, HEIGHT = 680, 820
 local COL_X = { 16, 352 }
 local SLIDER_W = 290
 local prefs, refreshPrefs
@@ -236,6 +236,23 @@ local function create()
         if v == 0 then return L["Don't look at the charges"] end
         return L["Warn with fewer than %d charges"]:format(v)
     end)
+    -- the poison each hand gets when its reminder icon is clicked; the menu says, per type, how many you carry,
+    -- whether you know the recipe and how many your reagents make
+    for _, hand in ipairs({ { "poisonMainType", L["Main hand"], ns.SLOT_MAIN_HAND }, { "poisonOffType", L["Off hand"], ns.SLOT_OFF_HAND } }) do
+        local key, handLabel, slot = hand[1], hand[2], hand[3]
+        local button = makeButton(prefs, x, y, 294, "", function(self)
+            ns.PopupMenu(self, ns.Prefs_PoisonOptions(slot), function(opt)
+                ns.char[key] = opt.key
+                ns.ApplySettings()
+                refreshAll()
+            end, 294)
+        end)
+        button.Refresh = function()
+            button:SetText(L["%s: %s"]:format(handLabel, ns.Prefs_PoisonChoiceName(slot)))
+        end
+        add(button)
+        y = y - 28
+    end
 
     header(L["Reagents"])
     check(L["Warn when Flash Powder or Blinding Powder run low"], "reagentWarn")
@@ -268,6 +285,38 @@ local function create()
     end)
     prefs:SetScript("OnHide", function() ns.ApplySettings() end)
     prefs:Hide()
+end
+
+-- What the hand's button says: the chosen type ("Automatic (Deadly Poison)" for auto, "Don't apply" for none).
+function ns.Prefs_PoisonChoiceName(slot)
+    local choice = slot == ns.SLOT_OFF_HAND and ns.char.poisonOffType or ns.char.poisonMainType
+    if choice == "none" then return L["Don't apply"] end
+    local status = ns.PoisonType_Status(ns.Poisons_ChoiceFor(slot))
+    if choice == "auto" then return L["Automatic (%s)"]:format(status.name) end
+    return status.name
+end
+
+-- The menu of a hand's poison: automatic, every type with what you have of it, and "don't apply". A type you carry
+-- is green, one you can make yellow, one you know but can't make white, one you neither know nor carry grey.
+function ns.Prefs_PoisonOptions(slot)
+    local auto = ns.PoisonType_Status(ns.Poisons_AutoFor(slot))
+    local options = { { key = "auto", name = L["Automatic (%s)"]:format(auto.name) } }
+    for _, t in ipairs(ns.POISON_TYPES) do
+        local s = ns.PoisonType_Status(t.key)
+        local detail, color
+        if s.stock > 0 then
+            detail, color = L["%d in bags"]:format(s.stock), { 0.3, 1, 0.3 }
+        elseif s.craftable > 0 then
+            detail, color = L["can make %d"]:format(s.craftable), { 1, 0.82, 0 }
+        elseif s.known then
+            detail, color = L["no reagents"], { 1, 1, 1 }
+        else
+            detail, color = L["not learned"], { 0.5, 0.5, 0.5 }
+        end
+        options[#options + 1] = { key = t.key, name = ("%s  (%s)"):format(s.name, detail), color = color }
+    end
+    options[#options + 1] = { key = "none", name = L["Don't apply"], color = { 0.7, 0.7, 0.7 } }
+    return options
 end
 
 function ns.Prefs_Refresh()

@@ -310,3 +310,66 @@ describe("Minimap button", function()
         assert.is_true(button:IsShown())
     end)
 end)
+
+describe("Click to apply", function()
+    local ns
+    before_each(function()
+        WowMock.Reset()
+        WowMock.inventory = { [16] = 100, [17] = 101 }
+        WowMock.items = { [100] = { classID = 2 }, [101] = { classID = 2 },
+            [8928] = { count = 10 }, [20844] = { count = 8 } } -- Instant VI, Deadly V
+        ns = start()
+        ns.char.locked = true
+        ns.char.poisonMainType, ns.char.poisonOffType = "instant", "deadly"
+        ns.Alerts_Update()
+    end)
+
+    local function macros()
+        local list = {}
+        for _, b in ipairs(ns.Alerts_ApplyButtons()) do
+            if b:IsShown() then list[#list + 1] = b:GetAttribute("macrotext1") end
+        end
+        return list
+    end
+
+    it("each hand's icon applies that hand's poison to that weapon", function()
+        assert.are.same({ "/use item:8928\n/use 16", "/use item:20844\n/use 17" }, macros())
+        assert.are.equal("macro", ns.Alerts_ApplyButtons()[1]:GetAttribute("type1"))
+    end)
+
+    it("nothing to click while unlocked, or for a poison you don't carry", function()
+        ns.char.locked = false
+        ns.Alerts_Update()
+        assert.are.same({}, macros())
+        ns.char.locked = true
+        WowMock.items[20844] = nil
+        ns.Alerts_Update()
+        assert.are.same({ "/use item:8928\n/use 16" }, macros())
+    end)
+
+    it("combat hides them before the lockdown and leaves them alone during it", function()
+        FireEvent("PLAYER_REGEN_DISABLED")
+        assert.are.same({}, macros())
+        WowMock.inCombat = true
+        ns.char.poisonInCombat = true
+        ns.Alerts_Update()
+        assert.are.same({}, macros())
+        WowMock.inCombat = false
+        FireEvent("PLAYER_REGEN_ENABLED")
+        ns.Alerts_Update()
+        assert.are.equal(2, #macros())
+    end)
+
+    it("the preferences list every type with what you have of it", function()
+        WowMock.spells = { [8681] = true }
+        local options = ns.Prefs_PoisonOptions(16)
+        assert.are.equal("auto", options[1].key)
+        assert.are.equal("none", options[#options].key)
+        assert.matches("10 in bags", options[2].name)
+        assert.matches("in bags", options[3].name)
+        assert.matches("not learned", options[4].name)
+        assert.are.equal("Spell8681", ns.Prefs_PoisonChoiceName(16)) -- the type's name: its first rank's recipe
+        ns.char.poisonOffType = "auto"
+        assert.are.equal("Automatic (Spell2835)", ns.Prefs_PoisonChoiceName(17))
+    end)
+end)

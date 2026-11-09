@@ -19,6 +19,7 @@ Modules\Settings\Settings.lua
 Modules\Rogue\Combo.lua
 Modules\Rogue\Energy.lua
 Modules\Rogue\Poisons.lua
+Modules\Rogue\PoisonTypes.lua
 Modules\Rogue\Reagents.lua
 Modules\Rogue\Auras.lua
 Modules\UI\Hud.lua

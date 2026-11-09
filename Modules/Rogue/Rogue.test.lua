@@ -261,3 +261,42 @@ describe("Energy filling up", function()
         assert.is_false(ns.Energy_Recovering(SECRET, 100, 13))
     end)
 end)
+
+describe("Poison types", function()
+    local ns
+    before_each(function()
+        WowMock.Reset()
+        ns = LoadAddon({ files = { "Modules/Core/Secret.lua", "Modules/Rogue/Poisons.lua", "Modules/Rogue/Auras.lua",
+            "Modules/Rogue/PoisonTypes.lua" } })
+        ns.char = { poisonMainType = "auto", poisonOffType = "auto" }
+    end)
+
+    it("the highest rank in the bags is the one to apply", function()
+        WowMock.items = { [6947] = { count = 3 }, [6950] = { count = 2 } }
+        local s = ns.PoisonType_Status("instant")
+        assert.are.equal(6950, s.item)
+        assert.are.equal(2, s.stock)
+        assert.is_false(s.known)
+    end)
+
+    it("learned: how many of the highest learned rank the reagents make", function()
+        WowMock.spells = { [8681] = true, [8687] = true } -- Instant I and II
+        WowMock.items = { [2928] = { count = 7 }, [3372] = { count = 5 } } -- Dust of Decay, Leaded Vial
+        local s = ns.PoisonType_Status("instant")
+        assert.is_true(s.known)
+        assert.are.equal(2, s.craftable) -- rank II: 3 dust each
+        assert.is_nil(s.item)
+    end)
+
+    it("each hand its own poison; automatic: Instant right, Deadly left when you have it", function()
+        assert.are.equal("instant", ns.Poisons_ChoiceFor(16))
+        assert.are.equal("instant", ns.Poisons_ChoiceFor(17))
+        WowMock.spells = { [2835] = true }
+        assert.are.equal("deadly", ns.Poisons_ChoiceFor(17))
+        ns.char.poisonMainType, ns.char.poisonOffType = "wound", "crippling"
+        assert.are.equal("wound", ns.Poisons_ChoiceFor(16))
+        assert.are.equal("crippling", ns.Poisons_ChoiceFor(17))
+        ns.char.poisonOffType = "none"
+        assert.are.equal("none", ns.Poisons_ChoiceFor(17))
+    end)
+end)
