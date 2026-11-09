@@ -230,3 +230,40 @@ describe("Combat", function()
         assert.is_true(alert:IsMouseEnabled())
     end)
 end)
+
+describe("Showing out of combat", function()
+    local ns
+    before_each(function()
+        WowMock.Reset()
+        ns = start()
+        ns.char.locked = true
+        ns.ApplySettings()
+    end)
+
+    it("an enemy targeted shows the bars; a dead one doesn't", function()
+        ns.Hud_Update()
+        assert.are.equal(0, ns.Hud_Frame():GetAlpha())
+        WowMock.units.target = { name = "Boar", hostile = true }
+        ns.Hud_Update()
+        assert.are.equal(1, ns.Hud_Frame():GetAlpha())
+        WowMock.units.target.dead = true
+        ns.Hud_Update()
+        assert.are.equal(0, ns.Hud_Frame():GetAlpha())
+    end)
+
+    it("secret energy filling up keeps them shown, then they hide", function()
+        local SECRET = {}
+        _G.issecretvalue = function(v) return v == SECRET end
+        WowMock.power[3] = { SECRET, 100 }
+        WowMock.time = 50
+        FireEvent("UNIT_POWER_FREQUENT", "player", "ENERGY")
+        ns.Hud_Update()
+        local shown = ns.Hud_Frame():GetAlpha()
+        WowMock.time = 60
+        ns.Hud_Update()
+        local later = ns.Hud_Frame():GetAlpha()
+        _G.issecretvalue = nil
+        assert.are.equal(1, shown)
+        assert.are.equal(0, later)
+    end)
+end)

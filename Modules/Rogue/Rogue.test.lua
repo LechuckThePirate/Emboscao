@@ -238,3 +238,26 @@ describe("Secret values", function()
         assert.are.equal(0, #ns.Auras_Active({ timerSliceAndDice = true }, 20))
     end)
 end)
+
+describe("Energy filling up", function()
+    local ns
+    local SECRET = setmetatable({}, { __lt = function() error("compare") end, __le = function() error("compare") end })
+    before_each(function()
+        WowMock.Reset()
+        ns = LoadAddon({ files = FILES })
+    end)
+    after_each(function() _G.issecretvalue = nil end)
+
+    it("readable energy: below the top", function()
+        assert.is_true(ns.Energy_Recovering(60, 100, 5))
+        assert.is_false(ns.Energy_Recovering(100, 100, 5))
+    end)
+
+    it("secret energy: a change in the last 2.5 seconds", function()
+        _G.issecretvalue = function(v) return v == SECRET end
+        assert.is_false(ns.Energy_Recovering(SECRET, 100, 5))
+        ns.Energy_OnChange(SECRET, 100, 10)
+        assert.is_true(ns.Energy_Recovering(SECRET, 100, 12))
+        assert.is_false(ns.Energy_Recovering(SECRET, 100, 13))
+    end)
+end)

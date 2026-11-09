@@ -27,8 +27,18 @@ local function isTick(delta, energy, max)
     return energy >= max and delta < 18 -- a tick cut short by the top
 end
 
+-- Whether the energy is still filling up. Readable: below the top. Secret: the game reports a change on every tick
+-- while it isn't full and goes quiet once it is, so a change in the last tick and a bit means "not full yet".
+local RECOVERING_FOR = ns.ENERGY_TICK + 0.5
+local lastChange
+function ns.Energy_Recovering(energy, max, now)
+    if not ns.IsSecret(energy) then return energy < max end
+    return lastChange ~= nil and now - lastChange <= RECOVERING_FOR
+end
+
 -- Called on every energy change, with the time (GetTime()).
 function ns.Energy_OnChange(energy, max, now)
+    lastChange = now
     if ns.IsSecret(energy) then
         if not (lastCast and now - lastCast <= CAST_WINDOW) then lastTick = now end
         lastEnergy = nil
@@ -53,5 +63,5 @@ function ns.Energy_TickProgress(now)
 end
 
 function ns.Energy_Reset()
-    lastTick, lastEnergy, lastCast = nil, nil, nil
+    lastTick, lastEnergy, lastCast, lastChange = nil, nil, nil, nil
 end

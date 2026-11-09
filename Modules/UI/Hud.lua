@@ -210,14 +210,15 @@ local function layoutTimers(active, top, width)
     end
 end
 
--- Whether the bars have anything to say: in combat, points, energy not full, a timer running, or being set up.
--- A secret count means the game is hiding it: there is something to show.
-function ns.Hud_ShouldShow(points_, energyCur, energyMax, activeTimers)
+-- Whether the bars have anything to say: in combat, an enemy targeted, points, energy filling up, a timer running,
+-- or being set up. A secret count means the game is hiding it: there is something to show.
+function ns.Hud_ShouldShow(points_, energyCur, energyMax, activeTimers, now)
     local c = ns.char
     if not c.hideIdle or not c.locked or ns.Prefs_IsShown() then return true end
     if inCombat() or activeTimers > 0 then return true end
+    if UnitCanAttack("player", "target") and not UnitIsDead("target") then return true end
     if ns.IsSecret(points_) or points_ > 0 then return true end
-    return not ns.IsSecret(energyCur) and energyCur < energyMax
+    return ns.Energy_Recovering(energyCur, energyMax, now)
 end
 
 function ns.Hud_Update()
@@ -228,7 +229,7 @@ function ns.Hud_Update()
     if max ~= appliedMax then ns.Hud_Apply() return end
     local cur, emax = ns.Energy_Get()
     local active = c.showTimers and ns.Auras_Active(c, now) or {}
-    if not ns.Hud_ShouldShow(real, cur, emax, #active) then
+    if not ns.Hud_ShouldShow(real, cur, emax, #active, now) then
         hud:SetAlpha(0)
         return
     end
