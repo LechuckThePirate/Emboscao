@@ -12,15 +12,17 @@ local function create()
     about = CreateFrame("Frame", "EmboscaoAboutFrame", UIParent, "BackdropTemplate")
     about:SetSize(WIDTH, HEIGHT)
     about:SetPoint("CENTER")
-    about:SetFrameStrata("DIALOG")
+    -- above the preferences (DIALOG), with a solid background so they don't show through
+    about:SetFrameStrata("FULLSCREEN_DIALOG")
+    about:SetToplevel(true)
     about:SetClampedToScreen(true)
     about:SetBackdrop({
-        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        bgFile = "Interface\\Buttons\\WHITE8x8",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile = true, tileSize = 16, edgeSize = 16,
+        tile = false, edgeSize = 16,
         insets = { left = 4, right = 4, top = 4, bottom = 4 },
     })
-    about:SetBackdropColor(0, 0, 0, 0.92)
+    about:SetBackdropColor(0.06, 0.05, 0.09, 1)
     about:SetMovable(true)
     about:EnableMouse(true)
     about:RegisterForDrag("LeftButton")
@@ -81,30 +83,11 @@ local function create()
     about:Hide()
 end
 
--- Never on top of the preferences: beside them when they are open (to the right, or to the left when the screen has
--- no room there), centered otherwise.
-function ns.About_Place()
-    if not about then return end
-    about:ClearAllPoints()
-    local prefs = ns.Prefs_Frame and ns.Prefs_Frame()
-    if not (prefs and prefs:IsShown()) then
-        about:SetPoint("CENTER")
-        return
-    end
-    local right = prefs:GetRight() or 0
-    local screen = UIParent:GetWidth() or 0
-    if right + 8 + about:GetWidth() <= screen then
-        about:SetPoint("TOPLEFT", prefs, "TOPRIGHT", 8, 0)
-    else
-        about:SetPoint("TOPRIGHT", prefs, "TOPLEFT", -8, 0)
-    end
-end
-
 function ns.About_Show()
     if not about then create() end
     about.version:SetText(L["Version %s"]:format(ns.Version()))
-    ns.About_Place()
     about:Show()
+    about:Raise()
 end
 
 function ns.About_Frame() return about end
