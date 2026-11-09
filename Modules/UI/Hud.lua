@@ -126,13 +126,22 @@ local function totalWidth(max)
     return max * c.comboWidth + (max - 1) * c.comboSpacing
 end
 
+-- Clicks: taken only while unlocked and out of combat (ns.TakesMouse); the padlock too.
+function ns.Hud_UpdateMouse()
+    if not hud then return end
+    local takes = ns.TakesMouse()
+    if not takes then hud:StopMovingOrSizing() end
+    hud:EnableMouse(takes)
+    hud.lock:EnableMouse(takes)
+end
+
 -- Sizes, positions and colors from the settings.
 function ns.Hud_Apply()
     if not hud then return end
     local c = ns.char
     hud:SetScale(c.scale)
     placeAt(hud, c.hudPos, { "CENTER", "CENTER", 0, -160 })
-    hud:EnableMouse(not c.locked)
+    ns.Hud_UpdateMouse()
     hud.mover:SetShown(not c.locked)
     hud.moverLabel:SetShown(not c.locked)
     hud.lock:SetShown(not c.locked)

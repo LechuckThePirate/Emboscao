@@ -169,6 +169,14 @@ function ns.Alerts_Shown()
     return shown
 end
 
+-- Clicks: taken only while unlocked and out of combat (ns.TakesMouse).
+function ns.Alerts_UpdateMouse()
+    if not frame then return end
+    local takes = ns.TakesMouse()
+    if not takes then frame:StopMovingOrSizing() end
+    frame:EnableMouse(takes)
+end
+
 function ns.Alerts_Apply()
     if not frame then return end
     local c = ns.char
@@ -176,7 +184,7 @@ function ns.Alerts_Apply()
     frame:ClearAllPoints()
     local pos = c.alertPos or { "CENTER", "CENTER", 0, 180 }
     frame:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
-    frame:EnableMouse(not c.locked)
+    ns.Alerts_UpdateMouse()
     frame.mover:SetShown(not c.locked)
     frame.moverLabel:SetShown(not c.locked)
     ns.Alerts_Update()

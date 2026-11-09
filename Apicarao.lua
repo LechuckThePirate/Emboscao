@@ -29,6 +29,13 @@ function ns.ApplySettings()
     ns.Alerts_Apply()
 end
 
+-- Whether the bars and the reminder take the mouse: only unlocked and out of combat, so in a fight every click
+-- goes through to the world. ns.inCombat follows PLAYER_REGEN_DISABLED / ENABLED (the combat flag can still be
+-- off when the first one fires).
+function ns.TakesMouse()
+    return not ns.char.locked and not ns.inCombat
+end
+
 -- Lock or unlock the bars and the reminder (slash command, the padlock, the preferences).
 function ns.SetLocked(locked)
     ns.char.locked = locked and true or false
@@ -42,12 +49,21 @@ local announcedReady = false
 local events = CreateFrame("Frame")
 events:RegisterEvent("ADDON_LOADED")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
+events:RegisterEvent("PLAYER_REGEN_DISABLED")
+events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
+    if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
+        ns.inCombat = (event == "PLAYER_REGEN_DISABLED")
+        if ns.active then
+            ns.Hud_UpdateMouse()
+            ns.Alerts_UpdateMouse()
+        end
+    elseif event == "ADDON_LOADED" then
         if arg1 ~= ADDON then return end
         ns.InitSettings()
         if not ns.IsRogue() then return end
         ns.active = true
+        ns.inCombat = UnitAffectingCombat("player") and true or false -- a /reload in combat
         announce(ns.L["initializing..."])
         ns.Hud_Init()
         ns.Alerts_Init()
