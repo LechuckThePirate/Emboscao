@@ -4,8 +4,8 @@ local _, ns = ...
 local es = {
     ["initializing..."] = "inicializando...",
     ["initialization complete"] = "inicialización completa",
-    ["Usage: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version"] =
-        "Uso: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version",
+    ["Usage: /emboscao | prefs | toggle | lock | unlock | reset | minimap | about | version"] =
+        "Uso: /emboscao | prefs | toggle | lock | unlock | reset | minimap | about | version",
     ["Bars and reminder shown."] = "Barras y aviso mostrados.",
     ["Bars and reminder hidden."] = "Barras y aviso ocultos.",
 
@@ -20,11 +20,11 @@ local es = {
     ["Unlock position"] = "Desbloquear posición",
     ["Turn off the poison reminder"] = "Desactivar el aviso de venenos",
     ["Turn on the poison reminder"] = "Activar el aviso de venenos",
-    ["About Apicarao!!"] = "Acerca de Apicarao!!",
+    ["About Emboscao!!"] = "Acerca de Emboscao!!",
     ["Hide the minimap button"] = "Ocultar el botón del minimapa",
     ["Show the minimap button"] = "Mostrar el botón del minimapa",
-    ["Minimap button hidden. Show it again with /apicarao minimap."] =
-        "Botón del minimapa oculto. Vuelve a mostrarlo con /apicarao minimap.",
+    ["Minimap button hidden. Show it again with /emboscao minimap."] =
+        "Botón del minimapa oculto. Vuelve a mostrarlo con /emboscao minimap.",
     ["Minimap button shown."] = "Botón del minimapa mostrado.",
 
     -- about
@@ -32,22 +32,22 @@ local es = {
     ["by LechuckThePirate"] = "por LechuckThePirate",
     ["Rogue toolset: combo point bars, energy and its tick, Slice and Dice and bleed timers, poison and reagent reminders."] =
         "Herramientas de pícaro: barras de puntos de combo, energía y su tick, duración de Hacer picadillo y los sangrados, avisos de venenos y componentes.",
-    ["Commands: /apicarao (preferences), /apicarao toggle, lock, unlock, reset, minimap, about, version."] =
-        "Comandos: /apicarao (preferencias), /apicarao toggle, lock, unlock, reset, minimap, about, version.",
+    ["Commands: /emboscao (preferences), /emboscao toggle, lock, unlock, reset, minimap, about, version."] =
+        "Comandos: /emboscao (preferencias), /emboscao toggle, lock, unlock, reset, minimap, about, version.",
     ["Found a bug or have an idea? Please report it on GitHub (click to select, then Ctrl+C):"] =
         "¿Has encontrado un fallo o tienes una idea? Cuéntalo en GitHub (clic para seleccionar y luego Ctrl+C):",
-    ["Apicarao!! is for rogues: nothing to do on this character."] =
-        "Apicarao!! es para pícaros: en este personaje no hace nada.",
+    ["Emboscao!! is for rogues: nothing to do on this character."] =
+        "Emboscao!! es para pícaros: en este personaje no hace nada.",
     ["Locked."] = "Bloqueado.",
     ["Unlocked: drag the bars and the reminder, right-click them for the preferences."] =
         "Desbloqueado: arrastra las barras y el aviso, clic derecho para las preferencias.",
     ["Positions reset."] = "Posiciones restablecidas.",
     ["Lock position"] = "Bloquear posición",
-    ["Unlock again with /apicarao unlock"] = "Para desbloquear de nuevo: /apicarao unlock",
+    ["Unlock again with /emboscao unlock"] = "Para desbloquear de nuevo: /emboscao unlock",
 
     -- bars and reminder
-    ["Apicarao!! -- drag to move, right-click: preferences"] = "Apicarao!! -- arrastra para mover, clic derecho: preferencias",
-    ["Apicarao!! reminders -- drag to move"] = "Avisos de Apicarao!! -- arrastra para mover",
+    ["Emboscao!! -- drag to move, right-click: preferences"] = "Emboscao!! -- arrastra para mover, clic derecho: preferencias",
+    ["Emboscao!! reminders -- drag to move"] = "Avisos de Emboscao!! -- arrastra para mover",
     ["Main hand"] = "Mano principal",
     ["Off hand"] = "Mano secundaria",
     ["%s: no poison"] = "%s: sin veneno",
@@ -73,7 +73,7 @@ local es = {
     ["Blinding Powder"] = "Polvo cegador",
 
     -- preferences
-    ["Apicarao!! Preferences"] = "Preferencias de Apicarao!!",
+    ["Emboscao!! Preferences"] = "Preferencias de Emboscao!!",
     ["Settings are saved for this character only."] = "Los ajustes se guardan solo para este personaje.",
     ["Settings are shared by all your characters."] = "Los ajustes son comunes a todos tus personajes.",
     ["Character specific preferences"] = "Preferencias por personaje",

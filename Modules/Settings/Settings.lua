@@ -2,11 +2,11 @@ local _, ns = ...
 
 -- Settings per character or for the whole account, as in Aggreao, Embolsao and Completao ("Character specific
 -- preferences"). The SWITCHABLE keys are read from and written to the active store: the character's
--- (ApicaraoCharDB) or the account's shared one (ApicaraoDB.shared). The rest of ns.char always belongs to the
+-- (EmboscaoCharDB) or the account's shared one (EmboscaoDB.shared). The rest of ns.char always belongs to the
 -- character. A key that was never set reads as its default (DEFAULTS), so a checkbox can store a plain true / false.
 -- Colors are { r, g, b, a } tables; they are always replaced, never changed in place (a default is shared).
 ns.DEFAULTS = {
-    enabled = true,           -- show the bars and the reminder (minimap button left-click, /apicarao toggle)
+    enabled = true,           -- show the bars and the reminder (minimap button left-click, /emboscao toggle)
     locked = false,           -- the bars and the reminder can't be dragged (and clicks go through them)
     scale = 1,
     hideIdle = true,          -- hide the bars out of combat with no combo points and full energy
@@ -72,41 +72,41 @@ local function deepCopy(value)
 end
 
 local function activeStore()
-    return ApicaraoCharDB.perCharacter and ApicaraoCharDB or ApicaraoDB.shared
+    return EmboscaoCharDB.perCharacter and EmboscaoCharDB or EmboscaoDB.shared
 end
 
 -- On load (ADDON_LOADED): prepares the saved variables and ns.db / ns.char.
 function ns.InitSettings()
-    ApicaraoDB = ApicaraoDB or {}
-    ApicaraoCharDB = ApicaraoCharDB or {}
-    ns.db = ApicaraoDB
+    EmboscaoDB = EmboscaoDB or {}
+    EmboscaoCharDB = EmboscaoCharDB or {}
+    ns.db = EmboscaoDB
     -- the first time, the shared settings come from the character that first uses them
-    if not ApicaraoDB.shared then
-        ApicaraoDB.shared = {}
-        for key in pairs(SWITCHABLE) do ApicaraoDB.shared[key] = deepCopy(ApicaraoCharDB[key]) end
+    if not EmboscaoDB.shared then
+        EmboscaoDB.shared = {}
+        for key in pairs(SWITCHABLE) do EmboscaoDB.shared[key] = deepCopy(EmboscaoCharDB[key]) end
     end
     -- per character by default; a new one starts with a copy of the shared ones
-    if ApicaraoCharDB.perCharacter == nil then
+    if EmboscaoCharDB.perCharacter == nil then
         for key in pairs(SWITCHABLE) do
-            if ApicaraoCharDB[key] == nil then ApicaraoCharDB[key] = deepCopy(ApicaraoDB.shared[key]) end
+            if EmboscaoCharDB[key] == nil then EmboscaoCharDB[key] = deepCopy(EmboscaoDB.shared[key]) end
         end
-        ApicaraoCharDB.perCharacter = true
+        EmboscaoCharDB.perCharacter = true
     end
     ns.char = setmetatable({}, {
         __index = function(_, key)
             local value
-            if SWITCHABLE[key] then value = activeStore()[key] else value = ApicaraoCharDB[key] end
+            if SWITCHABLE[key] then value = activeStore()[key] else value = EmboscaoCharDB[key] end
             if value == nil then return ns.DEFAULTS[key] end
             return value
         end,
         __newindex = function(_, key, value)
-            if SWITCHABLE[key] then activeStore()[key] = value else ApicaraoCharDB[key] = value end
+            if SWITCHABLE[key] then activeStore()[key] = value else EmboscaoCharDB[key] = value end
         end,
     })
 end
 
 function ns.IsPerCharacter()
-    return ApicaraoCharDB.perCharacter and true or false
+    return EmboscaoCharDB.perCharacter and true or false
 end
 
 -- Switching to per character copies the shared settings, so the change isn't noticed; switching back to
@@ -115,9 +115,9 @@ function ns.SetPerCharacter(enabled)
     enabled = enabled and true or false
     if enabled == ns.IsPerCharacter() then return end
     if enabled then
-        for key in pairs(SWITCHABLE) do ApicaraoCharDB[key] = deepCopy(ApicaraoDB.shared[key]) end
+        for key in pairs(SWITCHABLE) do EmboscaoCharDB[key] = deepCopy(EmboscaoDB.shared[key]) end
     end
-    ApicaraoCharDB.perCharacter = enabled
+    EmboscaoCharDB.perCharacter = enabled
     if ns.ApplySettings then ns.ApplySettings() end
 end
 

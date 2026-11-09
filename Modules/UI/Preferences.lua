@@ -1,7 +1,7 @@
 local _, ns = ...
 local L = ns.L
 
--- Preferences window (/apicarao, or right-click on the bars or the reminder while they are unlocked). Two
+-- Preferences window (/emboscao, or right-click on the bars or the reminder while they are unlocked). Two
 -- columns: the bars on the left, timers / poisons / reagents on the right. While it is open the bars and the
 -- reminder stay visible (and the combo points count up) so every change can be seen.
 local WIDTH, HEIGHT = 680, 820
@@ -134,7 +134,7 @@ local function makeColor(parent, x, y, text, key)
 end
 
 local function create()
-    prefs = CreateFrame("Frame", "ApicaraoPreferencesFrame", UIParent, "BackdropTemplate")
+    prefs = CreateFrame("Frame", "EmboscaoPreferencesFrame", UIParent, "BackdropTemplate")
     prefs:SetSize(WIDTH, HEIGHT)
     prefs:SetPoint("CENTER")
     prefs:SetFrameStrata("DIALOG")
@@ -151,14 +151,14 @@ local function create()
     prefs:RegisterForDrag("LeftButton")
     prefs:SetScript("OnDragStart", prefs.StartMoving)
     prefs:SetScript("OnDragStop", prefs.StopMovingOrSizing)
-    tinsert(UISpecialFrames, "ApicaraoPreferencesFrame")
+    tinsert(UISpecialFrames, "EmboscaoPreferencesFrame")
 
     local close = CreateFrame("Button", nil, prefs, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", -2, -2)
 
     local title = prefs:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOP", 0, -16)
-    title:SetText(L["Apicarao!! Preferences"])
+    title:SetText(L["Emboscao!! Preferences"])
 
     local widgets = {}
     local note = prefs:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
@@ -277,7 +277,7 @@ local function create()
         function() return ns.Minimap_IsShown() end,
         function(value) ns.Minimap_SetShown(value) end))
     y = y - 30
-    makeButton(prefs, x, y, 294, L["About Apicarao!!"], function() ns.About_Show() end)
+    makeButton(prefs, x, y, 294, L["About Emboscao!!"], function() ns.About_Show() end)
 
     prefs:SetScript("OnShow", function()
         refreshAll()

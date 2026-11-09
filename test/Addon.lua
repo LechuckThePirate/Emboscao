@@ -1,10 +1,10 @@
--- Loading the addon in tests: the files in TOC order (like the game), each with ("Apicarao", ns).
+-- Loading the addon in tests: the files in TOC order (like the game), each with ("Emboscao", ns).
 -- LoadAddon() loads everything; LoadAddon({ files = {...} }) only those files (with Localization/Locale.lua
 -- in front if missing). StartAddon(ns) simulates entering the game.
 
 function TocFiles()
     local files = {}
-    for line in io.lines("Apicarao.toc") do
+    for line in io.lines("Emboscao.toc") do
         line = line:gsub("\r", ""):gsub("%s+$", "")
         if line ~= "" and not line:match("^##") and line:match("%.lua$") then
             files[#files + 1] = (line:gsub("\\", "/"))
@@ -28,7 +28,7 @@ function LoadAddon(opts)
     end
     for _, f in ipairs(files) do
         local chunk = assert(loadfile(f))
-        chunk("Apicarao", ns)
+        chunk("Emboscao", ns)
     end
     return ns
 end
@@ -43,8 +43,8 @@ end
 
 -- ADDON_LOADED + PLAYER_ENTERING_WORLD, with fresh saved variables (or the ones passed in).
 function StartAddon(ns, db, charDB)
-    ApicaraoDB, ApicaraoCharDB = db, charDB
-    FireEvent("ADDON_LOADED", "Apicarao")
+    EmboscaoDB, EmboscaoCharDB = db, charDB
+    FireEvent("ADDON_LOADED", "Emboscao")
     FireEvent("PLAYER_ENTERING_WORLD")
     return ns
 end

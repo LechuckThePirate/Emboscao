@@ -4,7 +4,7 @@ describe("Settings", function()
     local ns, applied
 
     local function login(charDB, accountDB)
-        _G.ApicaraoDB, _G.ApicaraoCharDB = accountDB, charDB
+        _G.EmboscaoDB, _G.EmboscaoCharDB = accountDB, charDB
         ns = LoadAddon({ files = { "Modules/Settings/Settings.lua" } })
         applied = 0
         ns.ApplySettings = function() applied = applied + 1 end
@@ -16,8 +16,8 @@ describe("Settings", function()
 
     it("creates the saved variables on the first login, per character", function()
         login(nil, nil)
-        assert.is_not_nil(ApicaraoDB)
-        assert.is_not_nil(ApicaraoCharDB)
+        assert.is_not_nil(EmboscaoDB)
+        assert.is_not_nil(EmboscaoCharDB)
         assert.is_true(ns.IsPerCharacter())
     end)
 

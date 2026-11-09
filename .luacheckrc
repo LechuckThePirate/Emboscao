@@ -1,5 +1,5 @@
 -- luacheck: Lua 5.1, the game's version. Runs in CI; locally:
---   luacheck -q -- Apicarao.lua Localization Modules Apicarao.test.lua test setupTests.lua
+--   luacheck -q -- Emboscao.lua Localization Modules Emboscao.test.lua test setupTests.lua
 std = "lua51"
 max_line_length = 160
 codes = true
@@ -13,8 +13,8 @@ exclude_files = {
 
 -- what the addon defines as globals
 globals = {
-    "ApicaraoDB", "ApicaraoCharDB",
-    "SlashCmdList", "SLASH_APICARAO1", "SLASH_APICARAO2",
+    "EmboscaoDB", "EmboscaoCharDB",
+    "SlashCmdList", "SLASH_EMBOSCAO1", "SLASH_EMBOSCAO2",
 }
 
 -- the game's API and frames it uses

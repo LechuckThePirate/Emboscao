@@ -53,7 +53,7 @@ local function newStatusBar(parent)
 end
 
 local function create()
-    hud = CreateFrame("Frame", "ApicaraoHud", UIParent)
+    hud = CreateFrame("Frame", "EmboscaoHud", UIParent)
     hud:SetClampedToScreen(true)
     hud:SetMovable(true)
     hud:RegisterForDrag("LeftButton")
@@ -71,10 +71,10 @@ local function create()
     hud.mover:SetColorTexture(0, 0.5, 1, 0.25)
     hud.moverLabel = hud:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hud.moverLabel:SetPoint("BOTTOM", hud, "TOP", 0, 6)
-    hud.moverLabel:SetText(L["Apicarao!! -- drag to move, right-click: preferences"])
+    hud.moverLabel:SetText(L["Emboscao!! -- drag to move, right-click: preferences"])
 
     -- padlock left of the points, only while unlocked: one click locks the bars and the reminder (locked, they
-    -- let the clicks through, so unlocking goes through /apicarao unlock or the preferences)
+    -- let the clicks through, so unlocking goes through /emboscao unlock or the preferences)
     local lock = CreateFrame("Button", nil, hud)
     lock:SetSize(18, 18)
     lock:SetPoint("RIGHT", hud, "LEFT", -8, 0)
@@ -85,7 +85,7 @@ local function create()
     lock:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:AddLine(L["Lock position"], 1, 1, 1)
-        GameTooltip:AddLine(L["Unlock again with /apicarao unlock"], 0.7, 0.7, 0.7)
+        GameTooltip:AddLine(L["Unlock again with /emboscao unlock"], 0.7, 0.7, 0.7)
         GameTooltip:Show()
     end)
     lock:SetScript("OnLeave", GameTooltip_Hide)
@@ -224,7 +224,7 @@ end
 function ns.Hud_Update()
     if not hud then return end
     local c = ns.char
-    -- turned off (minimap button, /apicarao toggle): hidden, and its OnUpdate stops with it
+    -- turned off (minimap button, /emboscao toggle): hidden, and its OnUpdate stops with it
     hud:SetShown(c.enabled)
     if not c.enabled then return end
     local now = GetTime()

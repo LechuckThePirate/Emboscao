@@ -3,13 +3,13 @@ local L = ns.L
 
 -- About window: what the addon does, its version, the commands and where to report a bug (the URL in a box that
 -- can be selected and copied: the game can't open links).
-local ICON = "Interface\\AddOns\\" .. ADDON .. "\\Icons\\Apicarao.png"
-local URL = "https://github.com/LechuckThePirate/Apicarao"
+local ICON = "Interface\\AddOns\\" .. ADDON .. "\\Icons\\Emboscao.png"
+local URL = "https://github.com/LechuckThePirate/Emboscao"
 local WIDTH, HEIGHT = 420, 340
 local about
 
 local function create()
-    about = CreateFrame("Frame", "ApicaraoAboutFrame", UIParent, "BackdropTemplate")
+    about = CreateFrame("Frame", "EmboscaoAboutFrame", UIParent, "BackdropTemplate")
     about:SetSize(WIDTH, HEIGHT)
     about:SetPoint("CENTER")
     about:SetFrameStrata("DIALOG")
@@ -26,7 +26,7 @@ local function create()
     about:RegisterForDrag("LeftButton")
     about:SetScript("OnDragStart", about.StartMoving)
     about:SetScript("OnDragStop", about.StopMovingOrSizing)
-    tinsert(UISpecialFrames, "ApicaraoAboutFrame")
+    tinsert(UISpecialFrames, "EmboscaoAboutFrame")
 
     local close = CreateFrame("Button", nil, about, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", -2, -2)
@@ -38,7 +38,7 @@ local function create()
 
     local title = about:CreateFontString(nil, "ARTWORK", "GameFontNormalHuge")
     title:SetPoint("TOPLEFT", icon, "TOPRIGHT", 14, -6)
-    title:SetText("Apicarao!!")
+    title:SetText("Emboscao!!")
 
     local version = about:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     version:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6)
@@ -54,7 +54,7 @@ local function create()
     body:SetJustifyH("LEFT")
     body:SetSpacing(3)
     body:SetText(L["Rogue toolset: combo point bars, energy and its tick, Slice and Dice and bleed timers, poison and reagent reminders."]
-        .. "\n\n" .. L["Commands: /apicarao (preferences), /apicarao toggle, lock, unlock, reset, minimap, about, version."])
+        .. "\n\n" .. L["Commands: /emboscao (preferences), /emboscao toggle, lock, unlock, reset, minimap, about, version."])
 
     local report = about:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
     report:SetPoint("TOPLEFT", 20, -230)

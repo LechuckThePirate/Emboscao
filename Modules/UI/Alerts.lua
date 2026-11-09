@@ -129,7 +129,7 @@ local function newIcon()
 end
 
 local function create()
-    frame = CreateFrame("Frame", "ApicaraoAlert", UIParent)
+    frame = CreateFrame("Frame", "EmboscaoAlert", UIParent)
     frame:SetClampedToScreen(true)
     frame:SetMovable(true)
     frame:RegisterForDrag("LeftButton")
@@ -145,7 +145,7 @@ local function create()
     frame.mover:SetColorTexture(0, 0.5, 1, 0.25)
     frame.moverLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     frame.moverLabel:SetPoint("BOTTOM", frame, "TOP", 0, 6)
-    frame.moverLabel:SetText(L["Apicarao!! reminders -- drag to move"])
+    frame.moverLabel:SetText(L["Emboscao!! reminders -- drag to move"])
     for i = 1, MAX_ICONS do icons[i] = newIcon() end
 end
 
@@ -229,7 +229,7 @@ end
 
 local function applyButton(i)
     if not applyButtons[i] then
-        local b = CreateFrame("Button", "ApicaraoApplyButton" .. i, UIParent, "SecureActionButtonTemplate")
+        local b = CreateFrame("Button", "EmboscaoApplyButton" .. i, UIParent, "SecureActionButtonTemplate")
         b:RegisterForClicks("AnyUp", "AnyDown")
         b:SetAttribute("type1", "macro")
         b:SetScript("OnEnter", showApplyTooltip)

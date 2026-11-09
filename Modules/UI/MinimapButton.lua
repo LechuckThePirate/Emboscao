@@ -3,7 +3,7 @@ local L = ns.L
 
 -- Minimap button (as in the sibling addons): left-click shows or hides the bars and the reminder, right-click opens
 -- a menu (preferences, lock, poison reminder, reset, about, hide the button), drag moves it around the minimap.
-local ICON = "Interface\\AddOns\\" .. ADDON .. "\\Icons\\Apicarao.png"
+local ICON = "Interface\\AddOns\\" .. ADDON .. "\\Icons\\Emboscao.png"
 local button
 
 local function updatePosition()
@@ -39,13 +39,13 @@ function ns.Minimap_MenuOptions()
             ns.Hud_ResetPosition()
             ns.Alerts_ResetPosition()
         end },
-        { name = L["About Apicarao!!"], run = function() ns.About_Show() end },
+        { name = L["About Emboscao!!"], run = function() ns.About_Show() end },
         { name = L["Hide the minimap button"], color = { 0.7, 0.7, 0.7 }, run = function() ns.Minimap_Toggle() end },
     }
 end
 
 local function create()
-    button = CreateFrame("Button", "ApicaraoMinimapButton", Minimap)
+    button = CreateFrame("Button", "EmboscaoMinimapButton", Minimap)
     button:SetSize(31, 31)
     button:SetFrameStrata("MEDIUM")
     button:SetFrameLevel(8)
@@ -86,7 +86,7 @@ local function create()
     end)
     button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText("Apicarao!!")
+        GameTooltip:SetText("Emboscao!!")
         GameTooltip:AddLine(ns.char.enabled and L["Left-click: hide the bars"] or L["Left-click: show the bars"], 1, 1, 1)
         GameTooltip:AddLine(L["Right-click: menu"], 1, 1, 1)
         GameTooltip:AddLine(L["Drag: move"], 0.7, 0.7, 0.7)
@@ -117,7 +117,7 @@ end
 function ns.Minimap_Toggle()
     if not button then return end
     ns.Minimap_SetShown(ns.char.minimap.hide)
-    ns.Print(ns.char.minimap.hide and L["Minimap button hidden. Show it again with /apicarao minimap."]
+    ns.Print(ns.char.minimap.hide and L["Minimap button hidden. Show it again with /emboscao minimap."]
         or L["Minimap button shown."])
     ns.Prefs_Refresh()
 end

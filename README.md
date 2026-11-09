@@ -1,4 +1,4 @@
-# Apicarao!!
+# Emboscao!!
 
 Rogue toolset for WoW Forever.
 
@@ -10,5 +10,5 @@ Rogue toolset for WoW Forever.
   and with a sound, out of combat (optionally in combat too).
 - **Reagent reminder**: Flash Powder and Blinding Powder running low, for the spells you know.
 
-`/apicarao` (or `/apic`) opens the preferences; `/apicarao lock`, `unlock`, `reset`, `version`.
+`/emboscao` (or `/embos`) opens the preferences; `/emboscao lock`, `unlock`, `reset`, `version`.
 Unlocked, the bars and the reminder can be dragged and right-clicked for the preferences.

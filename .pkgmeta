@@ -1,4 +1,4 @@
-package-as: Apicarao
+package-as: Emboscao
 manual-changelog:
   filename: CHANGELOG.md
   markup-type: markdown

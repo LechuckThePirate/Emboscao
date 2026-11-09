@@ -1,4 +1,4 @@
-# Apicarao!! — agent guide
+# Emboscao!! — agent guide
 
 World of Warcraft addon: a rogue toolset. Movable combo point bars (one bar per point, side by side, no window; sizes and
 colors configurable), energy bar with the 2-second tick spark, duration bars (Slice and Dice, your Rupture / Garrote /
@@ -16,9 +16,9 @@ them. Only WoW Forever for now (`## Interface: 16001`). Siblings with the same c
 
 ## Layout
 
-Addon files at the repo root, packaged as the folder `Apicarao` (`.pkgmeta`):
+Addon files at the repo root, packaged as the folder `Emboscao` (`.pkgmeta`):
 
-- `Apicarao.toc` (load order), `Apicarao.lua` (entry point: events, `/apicarao`, `/apic`; does nothing on non-rogues)
+- `Emboscao.toc` (load order), `Emboscao.lua` (entry point: events, `/emboscao`, `/embos`; does nothing on non-rogues)
 - `Localization/Locale.lua` — English text is the key, with the Spanish table (a test checks every key has one)
 - `Modules/Settings/` — per character or account-wide settings (same scheme as Aggreao), defaults in `ns.DEFAULTS`
 - `Modules/Rogue/` — game logic without UI: `Combo`, `Energy` (tick detection from energy rises), `Poisons`
@@ -31,19 +31,19 @@ Addon files at the repo root, packaged as the folder `Apicarao` (`.pkgmeta`):
   PLAYER_REGEN_DISABLED and never touched in combat), `Preferences` (two-column window, color picker for both
   the old and the 10.2.5+ `ColorPickerFrame` API); tests in `UI.test.lua`
 - `test/` (WoW API mock + local runner), `setupTests.lua`
-- `Icons/Apicarao.png` (256x256, transparent): drawn as `images/icon.svg` in the siblings' style with a purple background
+- `Icons/Emboscao.png` (256x256, transparent): drawn as `images/icon.svg` in the siblings' style with a purple background
   (Completao green, Embolsao gold, Aggreao blue, Fabrikao red). Re-render after editing the SVG with headless Chrome:
-  `chrome --headless=new --default-background-color=00000000 --window-size=256,256 --screenshot=<repo>\Icons\Apicarao.png file:///<repo>/images/icon.html`
+  `chrome --headless=new --default-background-color=00000000 --window-size=256,256 --screenshot=<repo>\Icons\Emboscao.png file:///<repo>/images/icon.html`
 
 ## Commands (repo root)
 
 ```powershell
 lua test/busted.lua                       # all tests, no busted install needed
-luacheck -q -- Apicarao.lua Localization Modules Apicarao.test.lua test setupTests.lua
+luacheck -q -- Emboscao.lua Localization Modules Emboscao.test.lua test setupTests.lua
 ```
 
 Deploy to the Forever client (PowerShell; robocopy exit codes 0-7 are success):
-`robocopy . "D:\Games\World of Warcraft\_forever_\Interface\AddOns\Apicarao" *.lua *.toc *.png /S /PURGE /XD test images .github .git .claude /XF *.test.lua setupTests.lua`
+`robocopy . "D:\Games\World of Warcraft\_forever_\Interface\AddOns\Emboscao" *.lua *.toc *.png /S /PURGE /XD test images .github .git .claude /XF *.test.lua setupTests.lua`
 
 ## Code conventions
 

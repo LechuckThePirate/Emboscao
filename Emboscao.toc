@@ -1,5 +1,5 @@
 ## Interface: 16001
-## Title: Apicarao!!
+## Title: Emboscao!!
 ## Notes: Rogue toolset for WoW Forever: movable combo point bars, energy tick, Slice and Dice and bleed timers, poison and reagent reminders.
 ## Notes-esES: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
 ## Notes-esMX: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
@@ -9,9 +9,9 @@
 ## Author: LechuckThePirate
 ## Version: 0.1.0
 ## X-License: GPL-3.0
-## IconTexture: Interface\AddOns\Apicarao\Icons\Apicarao.png
-## SavedVariables: ApicaraoDB
-## SavedVariablesPerCharacter: ApicaraoCharDB
+## IconTexture: Interface\AddOns\Emboscao\Icons\Emboscao.png
+## SavedVariables: EmboscaoDB
+## SavedVariablesPerCharacter: EmboscaoCharDB
 
 Localization\Locale.lua
 Modules\Core\Secret.lua
@@ -28,4 +28,4 @@ Modules\UI\Menu.lua
 Modules\UI\Preferences.lua
 Modules\UI\MinimapButton.lua
 Modules\UI\About.lua
-Apicarao.lua
+Emboscao.lua

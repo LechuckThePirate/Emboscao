@@ -18,7 +18,7 @@ jobs:
       - name: Run luacheck
         uses: nebularg/actions-luacheck@d4137dd840545b28521ed21931e06913d93c0bc1 # v1
         with:
-          files: Apicarao.lua Localization Modules Apicarao.test.lua test setupTests.lua
+          files: Emboscao.lua Localization Modules Emboscao.test.lua test setupTests.lua
           args: -q
 
   unit-tests:

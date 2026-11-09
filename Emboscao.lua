@@ -1,10 +1,10 @@
 local ADDON, ns = ...
 
--- Addon entry point: events and /apicarao. Loaded last, once the modules (Modules/) are in. Only rogues get
+-- Addon entry point: events and /emboscao. Loaded last, once the modules (Modules/) are in. Only rogues get
 -- the bars and the reminder; on any other class the addon stays quiet.
 
 function ns.Print(...)
-    print("|cff33ff99Apicarao!!|r:", ...)
+    print("|cff33ff99Emboscao!!|r:", ...)
 end
 
 function ns.Version()
@@ -14,7 +14,7 @@ end
 
 local function announce(text)
     if ns.char and ns.char.quiet then return end
-    print(("|cff33ff99Apicarao!!|r v%s -- %s"):format(ns.Version(), text))
+    print(("|cff33ff99Emboscao!!|r v%s -- %s"):format(ns.Version(), text))
 end
 
 function ns.IsRogue()
@@ -46,7 +46,7 @@ function ns.SetLocked(locked)
         or ns.L["Unlocked: drag the bars and the reminder, right-click them for the preferences."])
 end
 
--- Show or hide the bars and the reminder (minimap button left-click, /apicarao toggle).
+-- Show or hide the bars and the reminder (minimap button left-click, /emboscao toggle).
 function ns.SetEnabled(enabled)
     ns.char.enabled = enabled and true or false
     ns.ApplySettings()
@@ -86,12 +86,12 @@ events:SetScript("OnEvent", function(_, event, arg1)
     end
 end)
 
-SLASH_APICARAO1 = "/apicarao"
-SLASH_APICARAO2 = "/apic"
-SlashCmdList.APICARAO = function(msg)
+SLASH_EMBOSCAO1 = "/emboscao"
+SLASH_EMBOSCAO2 = "/embos"
+SlashCmdList.EMBOSCAO = function(msg)
     msg = strtrim((msg or ""):lower())
     if not ns.active then
-        ns.Print(ns.L["Apicarao!! is for rogues: nothing to do on this character."])
+        ns.Print(ns.L["Emboscao!! is for rogues: nothing to do on this character."])
         return
     end
     if msg == "version" then
@@ -111,6 +111,6 @@ SlashCmdList.APICARAO = function(msg)
     elseif msg == "about" then
         ns.About_Show()
     else
-        ns.Print(ns.L["Usage: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version"])
+        ns.Print(ns.L["Usage: /emboscao | prefs | toggle | lock | unlock | reset | minimap | about | version"])
     end
 end
