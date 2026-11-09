@@ -81,7 +81,9 @@ local function newIcon()
     button.cross = button:CreateTexture(nil, "OVERLAY")
     button.cross:SetPoint("CENTER")
     button.cross:SetTexture(RED_X)
-    button.badge = button:CreateFontString(nil, "OVERLAY", "NumberFontNormalHuge")
+    -- a font of our own (not a template every client may not have), sized with the icon in layout()
+    button.badge = button:CreateFontString(nil, "OVERLAY")
+    button.badge:SetFont(STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF", 20, "THICKOUTLINE")
     button.badge:SetPoint("BOTTOM", 0, 4)
     button.badge:SetShadowOffset(2, -2)
     return button
@@ -127,6 +129,7 @@ local function layout(count)
         icon:ClearAllPoints()
         icon:SetPoint("TOPLEFT", frame, "TOPLEFT", (i - 1) * (size + gap), 0)
         icon.cross:SetSize(size * 0.8, size * 0.8)
+        icon.badge:SetFont(STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF", math.max(10, math.floor(size * 0.36)), "THICKOUTLINE")
     end
     frame:SetSize(math.max(1, count) * (size + gap) - gap, size)
 end

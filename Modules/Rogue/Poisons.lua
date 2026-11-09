@@ -29,6 +29,8 @@ end
 -- One hand's state: "missing", "expiring" (less than `minutes` left), "charges" (fewer than `charges`, 0 = off)
 -- or "ok"; then the seconds left and the charges.
 function ns.Poisons_Evaluate(has, expirationMs, charges, minutes, minCharges)
+    -- hidden by the game (secret values): nothing can be said about it
+    if ns.IsSecret(has) or ns.IsSecret(expirationMs) or ns.IsSecret(charges) then return "ok", 0, 0 end
     if not has then return "missing", 0, 0 end
     local left = (expirationMs or 0) / 1000
     if left > 0 and left < minutes * 60 then return "expiring", left, charges end

@@ -1,6 +1,6 @@
 dofile("setupTests.lua")
 
-local FILES = { "Modules/Rogue/Combo.lua", "Modules/Rogue/Energy.lua", "Modules/Rogue/Poisons.lua",
+local FILES = { "Modules/Core/Secret.lua", "Modules/Rogue/Combo.lua", "Modules/Rogue/Energy.lua", "Modules/Rogue/Poisons.lua",
     "Modules/Rogue/Reagents.lua", "Modules/Rogue/Auras.lua" }
 
 describe("Combo points", function()
@@ -202,5 +202,39 @@ describe("Timers", function()
         _G.C_UnitAuras = nil
         assert.are.equal(1, #active)
         assert.are.equal(5, active[1].left)
+    end)
+end)
+
+describe("Secret values", function()
+    local ns
+    local SECRET = setmetatable({}, { __lt = function() error("compare") end, __le = function() error("compare") end })
+    before_each(function()
+        WowMock.Reset()
+        ns = LoadAddon({ files = FILES })
+        _G.issecretvalue = function(v) return v == SECRET end
+    end)
+    after_each(function() _G.issecretvalue = nil end)
+
+    it("secret energy: a change is a tick unless you just cast something", function()
+        ns.Energy_OnCast(10)
+        ns.Energy_OnChange(SECRET, 100, 10.1)
+        assert.is_nil(ns.Energy_TickProgress(10.1))
+        ns.Energy_OnChange(SECRET, 100, 11)
+        assert.are.equal(0, ns.Energy_TickProgress(11))
+        assert.are.equal(0.5, ns.Energy_TickProgress(12))
+    end)
+
+    it("secret combo points come through untouched", function()
+        WowMock.combo = SECRET
+        assert.are.equal(SECRET, (ns.Combo_Get()))
+    end)
+
+    it("secret poison info is not reported", function()
+        assert.are.equal("ok", (ns.Poisons_Evaluate(SECRET, SECRET, SECRET, 5, 10)))
+    end)
+
+    it("secret auras are skipped", function()
+        WowMock.auras.player = { { name = SECRET, duration = 21, expirationTime = 30 } }
+        assert.are.equal(0, #ns.Auras_Active({ timerSliceAndDice = true }, 20))
     end)
 end)

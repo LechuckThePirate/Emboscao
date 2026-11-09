@@ -34,7 +34,9 @@ local function findAura(unit, filter, name)
         else
             return nil
         end
-        if auraName == name and (unit == "player" or source == nil or source == "player") then
+        -- a hidden (secret) aura can't be matched or timed: skipped
+        local hidden = ns.IsSecret(auraName) or ns.IsSecret(duration) or ns.IsSecret(expiration) or ns.IsSecret(source)
+        if not hidden and auraName == name and (unit == "player" or source == nil or source == "player") then
             return duration, expiration
         end
     end

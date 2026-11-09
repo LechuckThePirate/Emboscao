@@ -16,36 +16,47 @@ describe("Bars", function()
         ns.ApplySettings()
     end)
 
-    local function fills()
-        local list = {}
-        for _, f in ipairs(WowMock.frames) do
-            if f._kind == "Texture" and f._parent == ns.Hud_Frame() and f._set.SetColorTexture and f._points
-                and #f._points == 2 and f ~= ns.Hud_Frame().mover then
-                list[#list + 1] = f
-            end
-        end
-        return list
+    -- a secret value as the game hands it: something only its widgets can use
+    local SECRET = setmetatable({}, { __lt = function() error("attempt to compare a secret number value") end,
+        __le = function() error("attempt to compare a secret number value") end })
+    local function withSecrets(f)
+        _G.issecretvalue = function(v) return v == SECRET end
+        local ok, err = pcall(f)
+        _G.issecretvalue = nil
+        assert(ok, err)
     end
 
-    it("five points side by side, sized from the settings", function()
+    it("five points side by side, sized from the settings; each one fills from i-1 to i", function()
         ns.char.comboWidth, ns.char.comboSpacing = 20, 5
         ns.ApplySettings()
-        local hud = ns.Hud_Frame()
-        assert.are.equal(5 * 20 + 4 * 5, hud:GetWidth())
+        assert.are.equal(5 * 20 + 4 * 5, ns.Hud_Frame():GetWidth())
+        assert.are.same({ 2, 3 }, ns.Hud_Points()[3]._set.SetMinMaxValues)
     end)
 
-    it("points you have take the point color, the rest the empty one; all of them the full color", function()
+    it("every point gets the count; the full color when all of them are up", function()
+        local c = ns.char
         WowMock.combo = 2
         ns.Hud_Update()
-        local c = ns.char
-        local colored = {}
-        for _, f in ipairs(fills()) do colored[#colored + 1] = f._set.SetColorTexture end
-        assert.are.equal(c.comboColor[1], colored[1][1])
-        assert.are.equal(c.comboColor[1], colored[2][1])
-        assert.are.equal(c.comboEmptyColor[1], colored[3][1])
+        for _, p in ipairs(ns.Hud_Points()) do assert.are.equal(2, p._set.SetValue[1]) end
+        assert.are.equal(c.comboColor[2], ns.Hud_Points()[1]._set.SetStatusBarColor[2])
         WowMock.combo = 5
         ns.Hud_Update()
-        assert.are.equal(c.comboFullColor[2], fills()[1]._set.SetColorTexture[2])
+        assert.are.equal(c.comboFullColor[2], ns.Hud_Points()[1]._set.SetStatusBarColor[2])
+    end)
+
+    it("secret energy and combo points: handed to the widgets, never compared", function()
+        withSecrets(function()
+            WowMock.inCombat = false
+            WowMock.power[3] = { SECRET, 100 }
+            WowMock.combo = SECRET
+            ns.Hud_Update()
+            assert.are.equal(SECRET, ns.Hud_Energy()._set.SetValue[1])
+            assert.are.equal(SECRET, ns.Hud_Energy().right:GetText())
+            assert.are.equal(SECRET, ns.Hud_Points()[1]._set.SetValue[1])
+            assert.are.equal(ns.char.comboColor[2], ns.Hud_Points()[1]._set.SetStatusBarColor[2])
+            assert.are.equal(1, ns.Hud_Frame():GetAlpha())
+            FireEvent("UNIT_POWER_FREQUENT", "player", "ENERGY")
+        end)
     end)
 
     it("hidden when idle, shown with points, in combat or while unlocked", function()

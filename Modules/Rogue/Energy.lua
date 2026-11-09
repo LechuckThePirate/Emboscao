@@ -1,19 +1,23 @@
 local _, ns = ...
 
--- Energy and its 2-second tick. The game doesn't say when the next tick comes, so it is learned from the
--- energy changes: a rise of about one tick (20, 40 with Adrenaline Rush, or less when it reaches the top)
--- marks a tick. Other rises (Relentless Strikes' 25, Thistle Tea's 100) don't count.
+-- Energy and its 2-second tick. The game doesn't say when the next tick comes, so it is learned from the energy
+-- changes. Readable energy: a rise of about one tick (20, 40 with Adrenaline Rush, or less when it reaches the
+-- top) is a tick; other rises (Relentless Strikes' 25, Thistle Tea's 100) are not. Secret energy (Forever): the
+-- value can't be compared, so a change is taken as a tick when you didn't just cast something (spending energy,
+-- and Relentless Strikes' refund, come right after a cast).
 ns.ENERGY_TICK = 2
-local lastTick, lastEnergy
+local CAST_WINDOW = 0.25 -- an energy change this soon after a cast belongs to the cast
+local lastTick, lastEnergy, lastCast
 
 local function energyType()
     return Enum and Enum.PowerType and Enum.PowerType.Energy or 3
 end
 
+-- Current (maybe secret) and maximum energy.
 function ns.Energy_Get()
     local cur = UnitPower and UnitPower("player", energyType()) or 0
     local max = UnitPowerMax and UnitPowerMax("player", energyType()) or 100
-    if not max or max <= 0 then max = 100 end
+    if ns.IsSecret(max) or not max or max <= 0 then max = 100 end
     return cur or 0, max
 end
 
@@ -25,10 +29,20 @@ end
 
 -- Called on every energy change, with the time (GetTime()).
 function ns.Energy_OnChange(energy, max, now)
+    if ns.IsSecret(energy) then
+        if not (lastCast and now - lastCast <= CAST_WINDOW) then lastTick = now end
+        lastEnergy = nil
+        return
+    end
     if lastEnergy and energy > lastEnergy and isTick(energy - lastEnergy, energy, max) then
         lastTick = now
     end
     lastEnergy = energy
+end
+
+-- You cast something (UNIT_SPELLCAST_SUCCEEDED): the energy change that follows is not a tick.
+function ns.Energy_OnCast(now)
+    lastCast = now
 end
 
 -- How far into the current tick we are (0..1), or nil if no tick has been seen yet. Ticks keep coming at full
@@ -39,5 +53,5 @@ function ns.Energy_TickProgress(now)
 end
 
 function ns.Energy_Reset()
-    lastTick, lastEnergy = nil, nil
+    lastTick, lastEnergy, lastCast = nil, nil, nil
 end

@@ -23,13 +23,19 @@ local function placeAt(frame, pos, default)
     frame:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
 end
 
-local function newBorderedTexture(parent)
-    local border = parent:CreateTexture(nil, "BACKGROUND")
-    border:SetColorTexture(0, 0, 0, 0.9)
-    local fill = parent:CreateTexture(nil, "ARTWORK")
-    fill:SetPoint("TOPLEFT", border, "TOPLEFT", 1, -1)
-    fill:SetPoint("BOTTOMRIGHT", border, "BOTTOMRIGHT", -1, 1)
-    return border, fill
+-- One combo point: a StatusBar from i-1 to i fed the whole count, so it is full when you have at least i points.
+-- The game draws it, which works even when the count is a secret value.
+local function newPoint(parent, i)
+    local p = CreateFrame("StatusBar", nil, parent)
+    p:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+    p:SetMinMaxValues(i - 1, i)
+    p.border = p:CreateTexture(nil, "BACKGROUND", nil, -2)
+    p.border:SetPoint("TOPLEFT", -1, 1)
+    p.border:SetPoint("BOTTOMRIGHT", 1, -1)
+    p.border:SetColorTexture(0, 0, 0, 0.9)
+    p.empty = p:CreateTexture(nil, "BACKGROUND", nil, -1)
+    p.empty:SetAllPoints()
+    return p
 end
 
 local function newStatusBar(parent)
@@ -103,11 +109,7 @@ local function create()
 end
 
 local function point(i)
-    if not points[i] then
-        local p = {}
-        p.border, p.fill = newBorderedTexture(hud)
-        points[i] = p
-    end
+    if not points[i] then points[i] = newPoint(hud, i) end
     return points[i]
 end
 
@@ -150,11 +152,12 @@ function ns.Hud_Apply()
     local width = totalWidth(max)
     for i = 1, math.max(max, #points) do
         local p = point(i)
-        p.border:ClearAllPoints()
-        p.border:SetPoint("TOPLEFT", hud, "TOPLEFT", (i - 1) * (c.comboWidth + c.comboSpacing), 0)
-        p.border:SetSize(c.comboWidth, c.comboHeight)
-        p.border:SetShown(i <= max)
-        p.fill:SetShown(i <= max)
+        p:ClearAllPoints()
+        p:SetPoint("TOPLEFT", hud, "TOPLEFT", (i - 1) * (c.comboWidth + c.comboSpacing), 0)
+        p:SetSize(c.comboWidth, c.comboHeight)
+        p:SetShown(i <= max)
+        local e = c.comboEmptyColor
+        p.empty:SetColorTexture(e[1], e[2], e[3], e[4] or 1)
     end
     energy:ClearAllPoints()
     energy:SetPoint("TOPLEFT", hud, "TOPLEFT", 1, -(c.comboHeight + GAP + 1))
@@ -168,7 +171,7 @@ end
 
 -- In preview (preferences open, or unlocked) with no real points, the points count up so the colors show.
 local function shownPoints(real, max, now)
-    if real > 0 or not (ns.Prefs_IsShown() or not ns.char.locked) then return real end
+    if ns.IsSecret(real) or real > 0 or not (ns.Prefs_IsShown() or not ns.char.locked) then return real end
     if now - previewSince >= 0.8 then
         previewSince = now
         previewPoints = (previewPoints + 1) % (max + 1)
@@ -176,12 +179,14 @@ local function shownPoints(real, max, now)
     return previewPoints
 end
 
+-- The "all the points" color needs to compare the count, so it's skipped while the count is secret.
 local function colorPoints(have, max)
     local c = ns.char
-    local full = c.useFullColor and have >= max
+    local full = c.useFullColor and not ns.IsSecret(have) and have >= max
+    local color = full and c.comboFullColor or c.comboColor
     for i = 1, max do
-        local color = (i <= have) and (full and c.comboFullColor or c.comboColor) or c.comboEmptyColor
-        points[i].fill:SetColorTexture(color[1], color[2], color[3], color[4] or 1)
+        points[i]:SetStatusBarColor(color[1], color[2], color[3], color[4] or 1)
+        points[i]:SetValue(have)
     end
 end
 
@@ -206,10 +211,13 @@ local function layoutTimers(active, top, width)
 end
 
 -- Whether the bars have anything to say: in combat, points, energy not full, a timer running, or being set up.
+-- A secret count means the game is hiding it: there is something to show.
 function ns.Hud_ShouldShow(points_, energyCur, energyMax, activeTimers)
     local c = ns.char
     if not c.hideIdle or not c.locked or ns.Prefs_IsShown() then return true end
-    return inCombat() or points_ > 0 or energyCur < energyMax or activeTimers > 0
+    if inCombat() or activeTimers > 0 then return true end
+    if ns.IsSecret(points_) or points_ > 0 then return true end
+    return not ns.IsSecret(energyCur) and energyCur < energyMax
 end
 
 function ns.Hud_Update()
@@ -233,7 +241,8 @@ function ns.Hud_Update()
     if c.showEnergy then
         energy:SetMinMaxValues(0, emax)
         energy:SetValue(cur)
-        energy.right:SetText(c.energyText and tostring(cur) or "")
+        -- the number itself, not tostring(): the game's text widget takes a secret one
+        if c.energyText then energy.right:SetText(cur) else energy.right:SetText("") end
         local progress = c.energyTick and ns.Energy_TickProgress(now)
         energy.spark:SetShown(progress ~= nil and progress ~= false)
         if progress then
@@ -259,11 +268,16 @@ function ns.Hud_Init()
     if not hud then create() end
     local events = CreateFrame("Frame")
     for _, event in ipairs({ "UNIT_POWER_FREQUENT", "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "PLAYER_TARGET_CHANGED",
-        "PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED", "UNIT_AURA" }) do
+        "PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED", "UNIT_AURA", "UNIT_SPELLCAST_SUCCEEDED" }) do
         register(events, event)
     end
     events:SetScript("OnEvent", function(_, event, unit, kind)
-        if (event == "UNIT_POWER_FREQUENT" or event == "UNIT_POWER_UPDATE") and unit == "player" and kind == "ENERGY" then
+        if event == "UNIT_SPELLCAST_SUCCEEDED" then
+            if unit == "player" then ns.Energy_OnCast(GetTime()) end
+            return
+        end
+        -- UNIT_POWER_FREQUENT only: UNIT_POWER_UPDATE repeats the same change (two "ticks" from one rise)
+        if event == "UNIT_POWER_FREQUENT" and unit == "player" and kind == "ENERGY" then
             onEnergy()
         end
         ns.Hud_Update()
@@ -278,3 +292,5 @@ function ns.Hud_ResetPosition()
 end
 
 function ns.Hud_Frame() return hud end
+function ns.Hud_Points() return points end
+function ns.Hud_Energy() return energy end

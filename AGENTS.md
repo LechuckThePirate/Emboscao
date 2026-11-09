@@ -41,5 +41,10 @@ Deploy to the Forever client (PowerShell; robocopy exit codes 0-7 are success):
 
 - Lua 5.1. `local ADDON, ns = ...` in every file; no new globals (see `.luacheckrc`; game API globals go in `read_globals`).
 - Tests set game globals through `_G.X = ...` (the runner sandboxes plain assignments).
+- **Secret values**: Forever hides some numbers from addons (your energy even out of combat; maybe combo points,
+  auras, weapon enchants in combat). Never compare or do arithmetic with a game value without `ns.IsSecret`
+  (`Modules/Core/Secret.lua`); hand secrets straight to the widgets (`StatusBar:SetValue`, `FontString:SetText`). The
+  combo points are one StatusBar per point (min i-1, max i) for that reason, and the energy tick falls back to "a change
+  not right after a cast" when the energy is secret.
 - Optional game events are registered with `pcall` (an unknown event errors on some clients).
 - Commit style: `feat(scope):`, `fix(scope):`, `release: X.Y.Z -- short summary`. User-visible changes go in `CHANGELOG.md`.

@@ -24,7 +24,7 @@ read_globals = {
     "C_AddOns", "C_Item", "C_Spell", "C_Timer", "C_UnitAuras", "CreateFrame", "Enum",
     "GetAddOnMetadata", "GetComboPoints", "GetInventoryItemID", "GetInventoryItemTexture", "GetItemCount", "GetItemIcon",
     "GetItemInfo", "GetItemInfoInstant", "GetLocale", "GameTooltip", "GameTooltip_Hide", "GetSpellInfo", "GetTime", "GetWeaponEnchantInfo", "IsPlayerSpell",
-    "OpacitySliderFrame", "PlaySound", "UIParent", "UISpecialFrames", "UnitAffectingCombat", "UnitAura", "UnitClass",
+    "OpacitySliderFrame", "PlaySound", "STANDARD_TEXT_FONT", "issecretvalue", "UIParent", "UISpecialFrames", "UnitAffectingCombat", "UnitAura", "UnitClass",
     "UnitExists", "UnitLevel", "UnitPower", "UnitPowerMax", "strtrim", "tinsert",
 }
 
