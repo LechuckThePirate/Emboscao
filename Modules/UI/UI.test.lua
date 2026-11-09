@@ -100,10 +100,10 @@ describe("Reminder", function()
         return false
     end
 
-    it("a weapon without poison: its icon with a red X, a chat line and a sound, once", function()
+    it("a weapon without poison: its icon flashing with a red X, a chat line and a sound, once", function()
         ns.Alerts_Update()
         assert.is_true(ns.Alerts_Frame():IsShown())
-        assert.are.same({ { badge = "", cross = true } }, ns.Alerts_Shown())
+        assert.are.same({ { badge = "", cross = true, warning = false, flashing = true } }, ns.Alerts_Shown())
         assert.is_true(printed("Main hand: no poison"))
         local lines, sounds = #WowMock.printed, #WowMock.sounds
         ns.Alerts_Update()
@@ -118,10 +118,10 @@ describe("Reminder", function()
         assert.is_false(ns.Alerts_Frame():IsShown())
     end)
 
-    it("about to end: the time left over the icon, no X", function()
+    it("about to end: the time left and a warning sign, no X, no flashing", function()
         WowMock.enchants = { mh = { 125000, 0 } }
         ns.Alerts_Update()
-        assert.are.same({ { badge = "2:05", cross = false } }, ns.Alerts_Shown())
+        assert.are.same({ { badge = "2:05", cross = false, warning = true, flashing = false } }, ns.Alerts_Shown())
         assert.is_true(printed("Main hand: poison ends in 2:05"))
         WowMock.enchants = { mh = { 42000, 0 } }
         ns.Alerts_Update()
@@ -160,7 +160,7 @@ describe("Reminder", function()
         WowMock.spells = { [2094] = true }
         WowMock.items[5530] = { count = 1 }
         ns.Alerts_Update()
-        assert.are.same({ { badge = "1", cross = false } }, ns.Alerts_Shown())
+        assert.are.same({ { badge = "1", cross = false, warning = false, flashing = false } }, ns.Alerts_Shown())
         assert.is_true(printed("Blinding Powder: 1 left"))
     end)
 end)
@@ -384,5 +384,31 @@ describe("About window", function()
         assert.are.equal("CENTER", (about:GetPoint(1)))
         assert.are.equal("FULLSCREEN_DIALOG", about._set.SetFrameStrata[1])
         assert.are.equal(1, about._set.SetBackdropColor[4])
+    end)
+end)
+
+describe("Flashing", function()
+    it("the icon of a weapon without poison pulses; the others stay still", function()
+        WowMock.Reset()
+        WowMock.inventory = { [16] = 100, [17] = 101 }
+        WowMock.items = { [100] = { classID = 2 }, [101] = { classID = 2 } }
+        WowMock.enchants = { oh = { 30 * 60000, 6 } } -- off hand: few charges left
+        local ns = start()
+        ns.char.locked = true
+        ns.Alerts_Update()
+        local frame = ns.Alerts_Frame()
+        WowMock.time = 0.4
+        WowMock.Fire(frame, "OnUpdate", 0.1)
+        local shown = ns.Alerts_Shown()
+        assert.is_true(shown[1].flashing)
+        assert.is_true(shown[2].warning)
+        local main, off
+        for _, f in ipairs(WowMock.frames) do
+            if f._parent == frame and f._kind == "Frame" then
+                if not main then main = f elseif not off then off = f end
+            end
+        end
+        assert.is_true(main:GetAlpha() < 1)
+        assert.are.equal(1, off:GetAlpha())
     end)
 end)

@@ -9,6 +9,8 @@ local MAX_ICONS = 4
 local CHECK_EVERY = 1
 local SOUND_RAID_WARNING = 8959
 local RED_X = "Interface\\RaidFrame\\ReadyCheck-NotReady"
+local WARNING = "Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew"
+local FLASH_SPEED = 4 -- of the pulse of a weapon without poison (the alpha follows |sin(time * speed)|)
 local QUESTION = "Interface\\Icons\\INV_Misc_QuestionMark"
 local COLORS = {
     missing = { 1, 0.1, 0.1 },
@@ -113,6 +115,10 @@ local function newIcon()
     button.cross = button:CreateTexture(nil, "OVERLAY")
     button.cross:SetPoint("CENTER")
     button.cross:SetTexture(RED_X)
+    -- low on time or charges: a warning sign in the top right corner (the big X is for "it's gone")
+    button.warning = button:CreateTexture(nil, "OVERLAY", nil, 3)
+    button.warning:SetPoint("TOPRIGHT", 4, 4)
+    button.warning:SetTexture(WARNING)
     -- which weapon it is, small in the top left corner, when the big picture is the poison
     button.weapon = button:CreateTexture(nil, "OVERLAY", nil, 2)
     button.weapon:SetPoint("TOPLEFT", -4, 4)
@@ -147,6 +153,13 @@ local function create()
     frame.moverLabel:SetPoint("BOTTOM", frame, "TOP", 0, 6)
     frame.moverLabel:SetText(L["Emboscao!! reminders -- drag to move"])
     for i = 1, MAX_ICONS do icons[i] = newIcon() end
+    -- a weapon whose poison is gone flashes (the whole icon pulses), the rest stay still
+    frame:SetScript("OnUpdate", function()
+        local alpha = 0.3 + 0.7 * math.abs(math.sin(GetTime() * FLASH_SPEED))
+        for _, icon in ipairs(icons) do
+            if icon.flashing then icon:SetAlpha(alpha) end
+        end
+    end)
 end
 
 local function announce(list)
@@ -168,6 +181,7 @@ local function layout(count)
         icon:ClearAllPoints()
         icon:SetPoint("TOPLEFT", frame, "TOPLEFT", (i - 1) * (size + gap), 0)
         icon.cross:SetSize(size * 0.8, size * 0.8)
+        icon.warning:SetSize(math.floor(size * 0.45), math.floor(size * 0.45))
         icon.weapon:SetSize(math.floor(size * 0.4), math.floor(size * 0.4))
         icon.badge:SetFont(STANDARD_TEXT_FONT or "Fonts\\FRIZQT__.TTF", math.max(10, math.floor(size * 0.36)), "THICKOUTLINE")
     end
@@ -197,6 +211,9 @@ function ns.Alerts_Update()
             icon.border:SetColorTexture(color[1], color[2], color[3], 1)
             icon.texture:SetTexture(entry.icon or QUESTION)
             icon.cross:SetShown(entry.status == "missing")
+            icon.warning:SetShown(entry.status == "expiring" or entry.status == "charges")
+            icon.flashing = entry.status == "missing" and entry.key ~= nil -- not the samples shown while unlocked
+            if not icon.flashing then icon:SetAlpha(1) end
             icon.badge:SetText(entry.badge or "")
             icon.badge:SetTextColor(color[1], color[2], color[3])
             icon.weapon:SetShown(entry.weapon ~= nil)
@@ -280,13 +297,14 @@ end
 
 function ns.Alerts_ApplyButtons() return applyButtons end
 
--- The icons shown now (for the tests): { { status =, badge =, cross = } }.
+-- The icons shown now (for the tests): { { badge =, cross =, warning =, flashing = } }.
 function ns.Alerts_Shown()
     local shown = {}
     if not (frame and frame:IsShown()) then return shown end
     for _, icon in ipairs(icons) do
         if icon:IsShown() then
-            shown[#shown + 1] = { badge = icon.badge:GetText(), cross = icon.cross:IsShown() }
+            shown[#shown + 1] = { badge = icon.badge:GetText(), cross = icon.cross:IsShown(),
+                warning = icon.warning:IsShown(), flashing = icon.flashing == true }
         end
     end
     return shown
