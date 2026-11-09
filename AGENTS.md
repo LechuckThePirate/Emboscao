@@ -26,6 +26,9 @@ Addon files at the repo root, packaged as the folder `Apicarao` (`.pkgmeta`):
 - `Modules/UI/` — `Hud` (the bars), `Alerts` (the reminder), `Preferences` (two-column window, color picker for both
   the old and the 10.2.5+ `ColorPickerFrame` API); tests in `UI.test.lua`
 - `test/` (WoW API mock + local runner), `setupTests.lua`
+- `Icons/Apicarao.png` (256x256, transparent): drawn as `images/icon.svg` in the siblings' style with a purple background
+  (Completao green, Embolsao gold, Aggreao blue, Fabrikao red). Re-render after editing the SVG with headless Chrome:
+  `chrome --headless=new --default-background-color=00000000 --window-size=256,256 --screenshot=<repo>\Icons\Apicarao.png file:///<repo>/images/icon.html`
 
 ## Commands (repo root)
 
@@ -35,7 +38,7 @@ luacheck -q -- Apicarao.lua Localization Modules Apicarao.test.lua test setupTes
 ```
 
 Deploy to the Forever client (PowerShell; robocopy exit codes 0-7 are success):
-`robocopy . "D:\Games\World of Warcraft\_forever_\Interface\AddOns\Apicarao" *.lua *.toc /S /PURGE /XD test .github .git .claude /XF *.test.lua setupTests.lua`
+`robocopy . "D:\Games\World of Warcraft\_forever_\Interface\AddOns\Apicarao" *.lua *.toc *.png /S /PURGE /XD test images .github .git .claude /XF *.test.lua setupTests.lua`
 
 ## Code conventions
 

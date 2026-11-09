@@ -9,7 +9,7 @@
 ## Author: LechuckThePirate
 ## Version: 0.1.0
 ## X-License: GPL-3.0
-## IconTexture: Interface\Icons\Ability_Rogue_Eviscerate
+## IconTexture: Interface\AddOns\Apicarao\Icons\Apicarao.png
 ## SavedVariables: ApicaraoDB
 ## SavedVariablesPerCharacter: ApicaraoCharDB
 
