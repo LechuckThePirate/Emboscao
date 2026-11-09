@@ -300,3 +300,37 @@ describe("Poison types", function()
         assert.are.equal("none", ns.Poisons_ChoiceFor(17))
     end)
 end)
+
+describe("Hidden auras", function()
+    local ns
+    local all = { timerSliceAndDice = true }
+    before_each(function()
+        WowMock.Reset()
+        ns = LoadAddon({ files = FILES })
+    end)
+    after_each(function()
+        _G.C_UnitAuras = nil
+        _G.C_Secrets = nil
+    end)
+
+    it("a read that errors (secret auras in combat) is caught, and not retried for a second", function()
+        local calls = 0
+        _G.C_UnitAuras = { GetAuraDataByIndex = function()
+            calls = calls + 1
+            error("GetAuraDataByIndex(): Auras cannot be accessed when secret")
+        end }
+        assert.are.same({}, ns.Auras_Active(all, 10))
+        assert.are.same({}, ns.Auras_Active(all, 10.5))
+        assert.are.equal(1, calls)
+        ns.Auras_Active(all, 11.2)
+        assert.are.equal(2, calls)
+    end)
+
+    it("when the game says auras are secret, they aren't read at all", function()
+        local calls = 0
+        _G.C_Secrets = { ShouldAurasBeSecret = function() return true end }
+        _G.C_UnitAuras = { GetAuraDataByIndex = function() calls = calls + 1 end }
+        assert.are.same({}, ns.Auras_Active(all, 10))
+        assert.are.equal(0, calls)
+    end)
+end)

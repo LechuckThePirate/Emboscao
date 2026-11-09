@@ -19,12 +19,30 @@ function ns.SpellIcon(id)
     if GetSpellInfo then return (select(3, GetSpellInfo(id))) end
 end
 
+-- Forever hides auras in combat: asking for one then is a Lua error ("Auras cannot be accessed when secret"), not a
+-- secret value. When the game says they are secret, or a read fails, nothing is read again until a second has passed.
+local RETRY_AFTER = 1
+local hiddenUntil = 0
+
+local function aurasHidden(now)
+    if now < hiddenUntil then return true end
+    if C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret() then
+        hiddenUntil = now + RETRY_AFTER
+        return true
+    end
+    return false
+end
+
 -- One aura by name: its duration and expiration time, or nil.
-local function findAura(unit, filter, name)
+local function findAura(unit, filter, name, now)
     for i = 1, 40 do
         local auraName, duration, expiration, source
         if C_UnitAuras and C_UnitAuras.GetAuraDataByIndex then
-            local aura = C_UnitAuras.GetAuraDataByIndex(unit, i, filter)
+            local ok, aura = pcall(C_UnitAuras.GetAuraDataByIndex, unit, i, filter)
+            if not ok then
+                hiddenUntil = now + RETRY_AFTER
+                return nil
+            end
             if not aura then return nil end
             auraName, duration, expiration, source = aura.name, aura.duration, aura.expirationTime, aura.sourceUnit
         elseif UnitAura then
@@ -45,11 +63,12 @@ end
 -- The enabled timers running now, in table order: { { timer =, name =, icon =, left =, duration = } }.
 function ns.Auras_Active(settings, now)
     local active = {}
+    if aurasHidden(now) then return active end
     for _, timer in ipairs(ns.TIMERS) do
-        if settings[timer.key] and (timer.unit == "player" or UnitExists(timer.unit)) then
+        if settings[timer.key] and (timer.unit == "player" or UnitExists(timer.unit)) and not aurasHidden(now) then
             local name = ns.SpellName(timer.spell)
             local duration, expiration
-            if name then duration, expiration = findAura(timer.unit, timer.filter, name) end
+            if name then duration, expiration = findAura(timer.unit, timer.filter, name, now) end
             if duration and duration > 0 and expiration and expiration > now then
                 active[#active + 1] = { timer = timer, name = name, icon = ns.SpellIcon(timer.spell),
                     left = expiration - now, duration = duration }
