@@ -23,5 +23,8 @@ Modules\Rogue\Reagents.lua
 Modules\Rogue\Auras.lua
 Modules\UI\Hud.lua
 Modules\UI\Alerts.lua
+Modules\UI\Menu.lua
 Modules\UI\Preferences.lua
+Modules\UI\MinimapButton.lua
+Modules\UI\About.lua
 Apicarao.lua

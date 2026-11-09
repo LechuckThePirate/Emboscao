@@ -6,6 +6,7 @@ local _, ns = ...
 -- character. A key that was never set reads as its default (DEFAULTS), so a checkbox can store a plain true / false.
 -- Colors are { r, g, b, a } tables; they are always replaced, never changed in place (a default is shared).
 ns.DEFAULTS = {
+    enabled = true,           -- show the bars and the reminder (minimap button left-click, /apicarao toggle)
     locked = false,           -- the bars and the reminder can't be dragged (and clicks go through them)
     scale = 1,
     hideIdle = true,          -- hide the bars out of combat with no combo points and full energy
@@ -50,7 +51,7 @@ ns.DEFAULTS = {
 }
 
 local SWITCHABLE = {
-    quiet = true, hudPos = true, alertPos = true,
+    quiet = true, hudPos = true, alertPos = true, enabled = true, minimap = true,
     locked = true, scale = true, hideIdle = true,
     comboWidth = true, comboHeight = true, comboSpacing = true, comboColor = true, comboFullColor = true,
     comboEmptyColor = true, useFullColor = true,

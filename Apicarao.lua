@@ -27,6 +27,7 @@ function ns.ApplySettings()
     if not ns.active then return end
     ns.Hud_Apply()
     ns.Alerts_Apply()
+    ns.Minimap_Init() -- the button's saved place (a reset or the per character switch can change it)
 end
 
 -- Whether the bars and the reminder take the mouse: only unlocked and out of combat, so in a fight every click
@@ -43,6 +44,14 @@ function ns.SetLocked(locked)
     ns.Prefs_Refresh()
     ns.Print(ns.char.locked and ns.L["Locked."]
         or ns.L["Unlocked: drag the bars and the reminder, right-click them for the preferences."])
+end
+
+-- Show or hide the bars and the reminder (minimap button left-click, /apicarao toggle).
+function ns.SetEnabled(enabled)
+    ns.char.enabled = enabled and true or false
+    ns.ApplySettings()
+    ns.Prefs_Refresh()
+    ns.Print(ns.char.enabled and ns.L["Bars and reminder shown."] or ns.L["Bars and reminder hidden."])
 end
 
 local announcedReady = false
@@ -67,6 +76,7 @@ events:SetScript("OnEvent", function(_, event, arg1)
         announce(ns.L["initializing..."])
         ns.Hud_Init()
         ns.Alerts_Init()
+        ns.Minimap_Init()
     elseif event == "PLAYER_ENTERING_WORLD" and ns.active then
         ns.ApplySettings()
         if not announcedReady then
@@ -90,11 +100,17 @@ SlashCmdList.APICARAO = function(msg)
         ns.Prefs_Toggle()
     elseif msg == "lock" or msg == "unlock" then
         ns.SetLocked(msg == "lock")
+    elseif msg == "toggle" then
+        ns.SetEnabled(not ns.char.enabled)
     elseif msg == "reset" then
         ns.Hud_ResetPosition()
         ns.Alerts_ResetPosition()
         ns.Print(ns.L["Positions reset."])
+    elseif msg == "minimap" then
+        ns.Minimap_Toggle()
+    elseif msg == "about" then
+        ns.About_Show()
     else
-        ns.Print(ns.L["Usage: /apicarao | prefs | lock | unlock | reset | version"])
+        ns.Print(ns.L["Usage: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version"])
     end
 end

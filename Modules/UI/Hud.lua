@@ -224,6 +224,9 @@ end
 function ns.Hud_Update()
     if not hud then return end
     local c = ns.char
+    -- turned off (minimap button, /apicarao toggle): hidden, and its OnUpdate stops with it
+    hud:SetShown(c.enabled)
+    if not c.enabled then return end
     local now = GetTime()
     local real, max = ns.Combo_Get()
     if max ~= appliedMax then ns.Hud_Apply() return end

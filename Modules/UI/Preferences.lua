@@ -255,6 +255,12 @@ local function create()
     add(makeCheck(prefs, x, y, L["Show chat messages at startup"],
         function() return not ns.char.quiet end,
         function(value) ns.char.quiet = (not value) or nil end))
+    y = y - 26
+    add(makeCheck(prefs, x, y, L["Show the minimap button"],
+        function() return ns.Minimap_IsShown() end,
+        function(value) ns.Minimap_SetShown(value) end))
+    y = y - 30
+    makeButton(prefs, x, y, 294, L["About Apicarao!!"], function() ns.About_Show() end)
 
     prefs:SetScript("OnShow", function()
         refreshAll()

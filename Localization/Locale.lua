@@ -4,8 +4,38 @@ local _, ns = ...
 local es = {
     ["initializing..."] = "inicializando...",
     ["initialization complete"] = "inicialización completa",
-    ["Usage: /apicarao | prefs | lock | unlock | reset | version"] =
-        "Uso: /apicarao | prefs | lock | unlock | reset | version",
+    ["Usage: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version"] =
+        "Uso: /apicarao | prefs | toggle | lock | unlock | reset | minimap | about | version",
+    ["Bars and reminder shown."] = "Barras y aviso mostrados.",
+    ["Bars and reminder hidden."] = "Barras y aviso ocultos.",
+
+    -- minimap button
+    ["Left-click: hide the bars"] = "Clic izquierdo: ocultar las barras",
+    ["Left-click: show the bars"] = "Clic izquierdo: mostrar las barras",
+    ["Right-click: menu"] = "Clic derecho: menú",
+    ["Drag: move"] = "Arrastrar: mover",
+    ["Preferences"] = "Preferencias",
+    ["Hide the bars and the reminder"] = "Ocultar las barras y el aviso",
+    ["Show the bars and the reminder"] = "Mostrar las barras y el aviso",
+    ["Unlock position"] = "Desbloquear posición",
+    ["Turn off the poison reminder"] = "Desactivar el aviso de venenos",
+    ["Turn on the poison reminder"] = "Activar el aviso de venenos",
+    ["About Apicarao!!"] = "Acerca de Apicarao!!",
+    ["Hide the minimap button"] = "Ocultar el botón del minimapa",
+    ["Show the minimap button"] = "Mostrar el botón del minimapa",
+    ["Minimap button hidden. Show it again with /apicarao minimap."] =
+        "Botón del minimapa oculto. Vuelve a mostrarlo con /apicarao minimap.",
+    ["Minimap button shown."] = "Botón del minimapa mostrado.",
+
+    -- about
+    ["Version %s"] = "Versión %s",
+    ["by LechuckThePirate"] = "por LechuckThePirate",
+    ["Rogue toolset: combo point bars, energy and its tick, Slice and Dice and bleed timers, poison and reagent reminders."] =
+        "Herramientas de pícaro: barras de puntos de combo, energía y su tick, duración de Hacer picadillo y los sangrados, avisos de venenos y componentes.",
+    ["Commands: /apicarao (preferences), /apicarao toggle, lock, unlock, reset, minimap, about, version."] =
+        "Comandos: /apicarao (preferencias), /apicarao toggle, lock, unlock, reset, minimap, about, version.",
+    ["Found a bug or have an idea? Please report it on GitHub (click to select, then Ctrl+C):"] =
+        "¿Has encontrado un fallo o tienes una idea? Cuéntalo en GitHub (clic para seleccionar y luego Ctrl+C):",
     ["Apicarao!! is for rogues: nothing to do on this character."] =
         "Apicarao!! es para pícaros: en este personaje no hace nada.",
     ["Locked."] = "Bloqueado.",

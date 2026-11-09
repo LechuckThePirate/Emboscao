@@ -136,6 +136,10 @@ end
 
 function ns.Alerts_Update()
     if not frame then return end
+    if not ns.char.enabled then
+        frame:Hide()
+        return
+    end
     local list = ns.Alerts_Collect()
     announce(list)
     local setup = not ns.char.locked or ns.Prefs_IsShown()
