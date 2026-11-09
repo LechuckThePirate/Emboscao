@@ -1,10 +1,10 @@
 # Emboscao!! — agent guide
 
 World of Warcraft addon: a rogue toolset. Movable combo point bars (one bar per point, side by side, no window; sizes and
-colors configurable), energy bar with the 2-second tick spark, duration bars (Slice and Dice, your Rupture / Garrote /
-Expose Armor on the target), and a movable reminder for poisons missing or about to end (configurable minutes and charges)
-and low reagents (Flash Powder, Blinding Powder). Cooldowns are left out on purpose: the game's own cooldown manager shows
-them. Only WoW Forever for now (`## Interface: 16001`). Siblings with the same conventions under `D:\Source\WowAddons\`:
+colors configurable), energy bar with the 2-second tick spark, and a movable reminder for poisons missing or about to end
+(configurable minutes and charges; click an icon to apply that hand's poison) and low reagents (Flash Powder, Blinding
+Powder). Cooldowns and buff / debuff durations (Slice and Dice, bleeds...) are left out on purpose: the game's own cooldown
+manager shows them, and Forever makes reading auras in combat an error anyway. Only WoW Forever for now (`## Interface: 16001`). Siblings with the same conventions under `D:\Source\WowAddons\`:
 `Aggreao` (the template this repo was cloned from), `Completao`, `Embolsao`, `Fabrikao`.
 
 ## How to work with the maintainer
@@ -22,7 +22,7 @@ Addon files at the repo root, packaged as the folder `Emboscao` (`.pkgmeta`):
 - `Localization/Locale.lua` — English text is the key, with the Spanish table (a test checks every key has one)
 - `Modules/Settings/` — per character or account-wide settings (same scheme as Aggreao), defaults in `ns.DEFAULTS`
 - `Modules/Rogue/` — game logic without UI: `Combo`, `Energy` (tick detection from energy rises), `Poisons`
-  (`GetWeaponEnchantInfo`), `Reagents`, `Auras` (timers by localized spell name); tests in `Rogue.test.lua`
+  (`GetWeaponEnchantInfo`), `Reagents`; tests in `Rogue.test.lua`
 - `Modules/Rogue/PoisonTypes.lua` — every Forever poison by type and rank (recipe spell, item, reagents; copied from
   Fabrikao's Forever recipe data, skill line 40), what you carry / know / can make of each, and the type each hand gets
   (`poisonMainType` / `poisonOffType`: "auto", "none" or a type)

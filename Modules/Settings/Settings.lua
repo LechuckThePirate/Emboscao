@@ -27,14 +27,6 @@ ns.DEFAULTS = {
     energyText = true,
     energyColor = { 1, 0.9, 0.2, 1 },
 
-    -- duration bars: Slice and Dice on you, your Rupture / Garrote / Expose Armor on the target
-    showTimers = true,
-    timerHeight = 10,
-    timerSliceAndDice = true,
-    timerRupture = true,
-    timerGarrote = true,
-    timerExposeArmor = true,
-
     -- poison reminder
     poisonWarn = true,
     poisonMinutes = 5,        -- warn when a poison has less than this left
@@ -58,8 +50,6 @@ local SWITCHABLE = {
     comboWidth = true, comboHeight = true, comboSpacing = true, comboColor = true, comboFullColor = true,
     comboEmptyColor = true, useFullColor = true,
     showEnergy = true, energyHeight = true, energyTick = true, energyText = true, energyColor = true,
-    showTimers = true, timerHeight = true, timerSliceAndDice = true, timerRupture = true, timerGarrote = true,
-    timerExposeArmor = true,
     poisonWarn = true, poisonMinutes = true, poisonCharges = true, poisonOffHand = true, poisonInCombat = true,
     poisonSound = true, poisonMainType = true, poisonOffType = true, reagentWarn = true, reagentMin = true, alertIconSize = true,
 }

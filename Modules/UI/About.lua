@@ -55,7 +55,7 @@ local function create()
     body:SetWidth(WIDTH - 40)
     body:SetJustifyH("LEFT")
     body:SetSpacing(3)
-    body:SetText(L["Rogue toolset: combo point bars, energy and its tick, Slice and Dice and bleed timers, poison and reagent reminders."]
+    body:SetText(L["Rogue toolset: combo point bars, energy and its tick, poison reminders with click to apply, reagent reminders."]
         .. "\n\n" .. L["Commands: /emboscao (preferences), /emboscao toggle, lock, unlock, reset, minimap, about, version."])
 
     local report = about:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")

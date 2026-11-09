@@ -21,10 +21,10 @@ globals = {
 -- the color picker of old clients is set up by writing its fields
 read_globals = {
     ColorPickerFrame = { read_only = false, other_fields = true },
-    "C_AddOns", "C_Item", "C_Secrets", "CLOSE", "GetCursorPosition", "InCombatLockdown", "IsMouseButtonDown", "Minimap", "C_Spell", "C_Timer", "C_UnitAuras", "CreateFrame", "Enum",
+    "C_AddOns", "C_Item", "CLOSE", "GetCursorPosition", "InCombatLockdown", "IsMouseButtonDown", "Minimap", "C_Spell", "C_Timer", "CreateFrame", "Enum",
     "GetAddOnMetadata", "GetComboPoints", "GetInventoryItemID", "GetInventoryItemTexture", "GetItemCount", "GetItemIcon",
     "GetItemInfo", "GetItemInfoInstant", "GetLocale", "GameTooltip", "GameTooltip_Hide", "GetSpellInfo", "GetTime", "GetWeaponEnchantInfo", "IsPlayerSpell",
-    "OpacitySliderFrame", "PlaySound", "STANDARD_TEXT_FONT", "issecretvalue", "UIParent", "UISpecialFrames", "UnitAffectingCombat", "UnitAura", "UnitCanAttack", "UnitClass", "UnitIsDead",
+    "OpacitySliderFrame", "PlaySound", "STANDARD_TEXT_FONT", "issecretvalue", "UIParent", "UISpecialFrames", "UnitAffectingCombat", "UnitCanAttack", "UnitClass", "UnitIsDead",
     "UnitExists", "UnitLevel", "UnitPower", "UnitPowerMax", "strtrim", "tinsert",
 }
 

@@ -30,15 +30,13 @@ local function resetState()
     WowMock.inCombat = false
     WowMock.cvars = {}
     -- rogue state: power[type] = { cur, max }, combo = points on the target, enchants = GetWeaponEnchantInfo
-    -- values, inventory[slot] = itemID, items[id] = { classID =, count = }, spells[id] = true (known),
-    -- auras[unit] = { { name =, spellId =, duration =, expirationTime =, sourceUnit = } }
+    -- values, inventory[slot] = itemID, items[id] = { classID =, count = }, spells[id] = true (known)
     WowMock.power = { [3] = { 100, 100 } }
     WowMock.combo = 0
     WowMock.enchants = {}
     WowMock.inventory = {}
     WowMock.items = {}
     WowMock.spells = {}
-    WowMock.auras = {}
 end
 resetState()
 WowMock.Reset = resetState
@@ -334,7 +332,7 @@ C_AddOns = { GetAddOnMetadata = function(_, key) return key == "Version" and "0.
 SlashCmdList = {}
 
 ---------------------------------------------------------------------------------------------------
--- Rogue: power, combo points, weapon enchants (poisons), bags, spells and auras
+-- Rogue: power, combo points, weapon enchants (poisons), bags and spells
 ---------------------------------------------------------------------------------------------------
 Enum = { PowerType = { Energy = 3, ComboPoints = 4 } }
 UnitPower = function(_, kind)
@@ -362,18 +360,4 @@ end
 GetItemCount = function(id) local item = WowMock.items[id]; return item and item.count or 0 end
 IsPlayerSpell = function(id) return WowMock.spells[id] == true end
 GetSpellInfo = function(id) return "Spell" .. tostring(id), nil, "icon" .. tostring(id) end
-UnitAura = function(unit, index, filter)
-    local list = WowMock.auras[unit] or {}
-    local n = 0
-    for _, a in ipairs(list) do
-        local harmful = a.harmful == true
-        local wantHarmful = filter and filter:find("HARMFUL") ~= nil
-        if harmful == wantHarmful and (not (filter and filter:find("PLAYER")) or a.sourceUnit == "player") then
-            n = n + 1
-            if n == index then
-                return a.name, "icon", 0, nil, a.duration, a.expirationTime, a.sourceUnit, nil, nil, a.spellId
-            end
-        end
-    end
-end
 IsResting = function() return WowMock.resting or false end

@@ -1,7 +1,7 @@
 dofile("setupTests.lua")
 
 local FILES = { "Modules/Core/Secret.lua", "Modules/Rogue/Combo.lua", "Modules/Rogue/Energy.lua", "Modules/Rogue/Poisons.lua",
-    "Modules/Rogue/Reagents.lua", "Modules/Rogue/Auras.lua" }
+    "Modules/Rogue/Reagents.lua" }
 
 describe("Combo points", function()
     local ns
@@ -165,46 +165,6 @@ describe("Reagents", function()
     end)
 end)
 
-describe("Timers", function()
-    local ns
-    local all = { timerSliceAndDice = true, timerRupture = true, timerGarrote = true, timerExposeArmor = true }
-    before_each(function()
-        WowMock.Reset()
-        ns = LoadAddon({ files = FILES })
-    end)
-
-    it("Slice and Dice on you and your Rupture on the target", function()
-        WowMock.units.target = { name = "Boar", hostile = true }
-        WowMock.auras.player = { { name = "Spell5171", duration = 21, expirationTime = 30 } }
-        WowMock.auras.target = {
-            { name = "Spell1943", duration = 16, expirationTime = 25, sourceUnit = "player", harmful = true },
-            { name = "Spell8647", duration = 30, expirationTime = 40, sourceUnit = "party1", harmful = true },
-        }
-        local active = ns.Auras_Active(all, 20)
-        assert.are.equal(2, #active)
-        assert.are.equal("timerSliceAndDice", active[1].timer.key)
-        assert.are.equal(10, active[1].left)
-        assert.are.equal("timerRupture", active[2].timer.key)
-        assert.are.equal(5, active[2].left)
-    end)
-
-    it("a timer turned off, or with no target, is not listed", function()
-        WowMock.auras.player = { { name = "Spell5171", duration = 21, expirationTime = 30 } }
-        WowMock.auras.target = { { name = "Spell1943", duration = 16, expirationTime = 25, sourceUnit = "player", harmful = true } }
-        assert.are.equal(0, #ns.Auras_Active({ timerRupture = true }, 20))
-    end)
-
-    it("uses C_UnitAuras where it exists", function()
-        _G.C_UnitAuras = { GetAuraDataByIndex = function(unit, i)
-            if unit == "player" and i == 1 then return { name = "Spell5171", duration = 21, expirationTime = 30 } end
-        end }
-        local active = ns.Auras_Active(all, 25)
-        _G.C_UnitAuras = nil
-        assert.are.equal(1, #active)
-        assert.are.equal(5, active[1].left)
-    end)
-end)
-
 describe("Secret values", function()
     local ns
     local SECRET = setmetatable({}, { __lt = function() error("compare") end, __le = function() error("compare") end })
@@ -233,10 +193,6 @@ describe("Secret values", function()
         assert.are.equal("ok", (ns.Poisons_Evaluate(SECRET, SECRET, SECRET, 5, 10)))
     end)
 
-    it("secret auras are skipped", function()
-        WowMock.auras.player = { { name = SECRET, duration = 21, expirationTime = 30 } }
-        assert.are.equal(0, #ns.Auras_Active({ timerSliceAndDice = true }, 20))
-    end)
 end)
 
 describe("Energy filling up", function()
@@ -266,7 +222,7 @@ describe("Poison types", function()
     local ns
     before_each(function()
         WowMock.Reset()
-        ns = LoadAddon({ files = { "Modules/Core/Secret.lua", "Modules/Rogue/Poisons.lua", "Modules/Rogue/Auras.lua",
+        ns = LoadAddon({ files = { "Modules/Core/Secret.lua", "Modules/Rogue/Poisons.lua",
             "Modules/Rogue/PoisonTypes.lua" } })
         ns.char = { poisonMainType = "auto", poisonOffType = "auto" }
     end)
@@ -298,39 +254,5 @@ describe("Poison types", function()
         assert.are.equal("crippling", ns.Poisons_ChoiceFor(17))
         ns.char.poisonOffType = "none"
         assert.are.equal("none", ns.Poisons_ChoiceFor(17))
-    end)
-end)
-
-describe("Hidden auras", function()
-    local ns
-    local all = { timerSliceAndDice = true }
-    before_each(function()
-        WowMock.Reset()
-        ns = LoadAddon({ files = FILES })
-    end)
-    after_each(function()
-        _G.C_UnitAuras = nil
-        _G.C_Secrets = nil
-    end)
-
-    it("a read that errors (secret auras in combat) is caught, and not retried for a second", function()
-        local calls = 0
-        _G.C_UnitAuras = { GetAuraDataByIndex = function()
-            calls = calls + 1
-            error("GetAuraDataByIndex(): Auras cannot be accessed when secret")
-        end }
-        assert.are.same({}, ns.Auras_Active(all, 10))
-        assert.are.same({}, ns.Auras_Active(all, 10.5))
-        assert.are.equal(1, calls)
-        ns.Auras_Active(all, 11.2)
-        assert.are.equal(2, calls)
-    end)
-
-    it("when the game says auras are secret, they aren't read at all", function()
-        local calls = 0
-        _G.C_Secrets = { ShouldAurasBeSecret = function() return true end }
-        _G.C_UnitAuras = { GetAuraDataByIndex = function() calls = calls + 1 end }
-        assert.are.same({}, ns.Auras_Active(all, 10))
-        assert.are.equal(0, calls)
     end)
 end)

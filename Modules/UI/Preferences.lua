@@ -2,9 +2,9 @@ local _, ns = ...
 local L = ns.L
 
 -- Preferences window (/emboscao, or right-click on the bars or the reminder while they are unlocked). Two
--- columns: the bars on the left, timers / poisons / reagents on the right. While it is open the bars and the
+-- columns: the bars on the left, poisons / reagents on the right. While it is open the bars and the
 -- reminder stay visible (and the combo points count up) so every change can be seen.
-local WIDTH, HEIGHT = 680, 820
+local WIDTH, HEIGHT = 680, 700
 local COL_X = { 16, 352 }
 local SLIDER_W = 290
 local prefs, refreshPrefs
@@ -217,15 +217,8 @@ local function create()
     slider(2, 30, 1, "energyHeight", px(L["Height: %d"]))
     color(L["Energy color"], "energyColor")
 
-    -- right column: timers, poisons, reagents, buttons
+    -- right column: poisons, reagents, buttons
     x, y = COL_X[2], -46
-    header(L["Duration bars"])
-    check(L["Show the duration bars"], "showTimers")
-    for _, timer in ipairs(ns.TIMERS) do
-        check(ns.SpellName(timer.spell) or timer.key, timer.key)
-    end
-    slider(4, 30, 1, "timerHeight", px(L["Height: %d"]))
-
     header(L["Poisons"])
     check(L["Remind me to apply poisons"], "poisonWarn")
     check(L["Off hand too"], "poisonOffHand")

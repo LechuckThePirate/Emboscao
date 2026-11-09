@@ -30,8 +30,8 @@ local es = {
     -- about
     ["Version %s"] = "Versión %s",
     ["by LechuckThePirate"] = "por LechuckThePirate",
-    ["Rogue toolset: combo point bars, energy and its tick, Slice and Dice and bleed timers, poison and reagent reminders."] =
-        "Herramientas de pícaro: barras de puntos de combo, energía y su tick, duración de Hacer picadillo y los sangrados, avisos de venenos y componentes.",
+    ["Rogue toolset: combo point bars, energy and its tick, poison reminders with click to apply, reagent reminders."] =
+        "Herramientas de pícaro: barras de puntos de combo, energía y su tick, avisos de venenos con clic para aplicarlos, avisos de componentes.",
     ["Commands: /emboscao (preferences), /emboscao toggle, lock, unlock, reset, minimap, about, version."] =
         "Comandos: /emboscao (preferencias), /emboscao toggle, lock, unlock, reset, minimap, about, version.",
     ["Found a bug or have an idea? Please report it on GitHub (click to select, then Ctrl+C):"] =
@@ -93,8 +93,6 @@ local es = {
     ["Show the next energy tick (spark)"] = "Mostrar el próximo tick de energía (chispa)",
     ["Show the energy value"] = "Mostrar el valor de energía",
     ["Energy color"] = "Color de la energía",
-    ["Duration bars"] = "Barras de duración",
-    ["Show the duration bars"] = "Mostrar las barras de duración",
     ["Poisons"] = "Venenos",
     ["Remind me to apply poisons"] = "Avisarme de poner venenos",
     ["Off hand too"] = "También la mano secundaria",

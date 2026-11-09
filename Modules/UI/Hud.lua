@@ -1,12 +1,13 @@
 local _, ns = ...
 local L = ns.L
 
--- The bars: combo points side by side, energy under them (with the tick spark) and the duration bars under
--- that. No window: just the bars, dragged around while unlocked (a dark box and a label show where it is).
+-- The bars: combo points side by side and energy under them (with the tick spark). No window: just the bars,
+-- dragged around while unlocked (a dark box and a label show where it is). Buff and debuff durations are left to
+-- the game's own cooldown manager.
 local BAR_TEXTURE = "Interface\\TargetingFrame\\UI-StatusBar"
 local GAP = 3          -- between the rows
 local UPDATE_EVERY = 0.05
-local hud, points, energy, timerBars = nil, {}, nil, {}
+local hud, points, energy = nil, {}, nil
 local previewPoints, previewSince = 0, 0
 local appliedMax -- the points laid out by Hud_Apply
 
@@ -113,16 +114,6 @@ local function point(i)
     return points[i]
 end
 
-local function timerBar(i)
-    if not timerBars[i] then
-        local bar = newStatusBar(hud)
-        bar.icon = bar:CreateTexture(nil, "ARTWORK")
-        bar.icon:SetPoint("RIGHT", bar, "LEFT", -2, 0)
-        timerBars[i] = bar
-    end
-    return timerBars[i]
-end
-
 local function totalWidth(max)
     local c = ns.char
     return max * c.comboWidth + (max - 1) * c.comboSpacing
@@ -190,32 +181,12 @@ local function colorPoints(have, max)
     end
 end
 
-local function layoutTimers(active, top, width)
-    local c = ns.char
-    for i, bar in ipairs(timerBars) do bar:SetShown(i <= #active) end
-    for i, aura in ipairs(active) do
-        local bar = timerBar(i)
-        bar:ClearAllPoints()
-        bar:SetPoint("TOPLEFT", hud, "TOPLEFT", c.timerHeight + 3, top - (i - 1) * (c.timerHeight + GAP))
-        bar:SetSize(width - c.timerHeight - 4, c.timerHeight)
-        bar.icon:SetSize(c.timerHeight + 1, c.timerHeight + 1)
-        bar.icon:SetTexture(aura.icon)
-        local color = aura.timer.color
-        bar:SetStatusBarColor(color[1], color[2], color[3], 1)
-        bar:SetMinMaxValues(0, aura.duration)
-        bar:SetValue(aura.left)
-        bar.left:SetText(aura.name)
-        bar.right:SetText(("%d"):format(math.ceil(aura.left)))
-        bar:Show()
-    end
-end
-
--- Whether the bars have anything to say: in combat, an enemy targeted, points, energy filling up, a timer running,
--- or being set up. A secret count means the game is hiding it: there is something to show.
-function ns.Hud_ShouldShow(points_, energyCur, energyMax, activeTimers, now)
+-- Whether the bars have anything to say: in combat, an enemy targeted, points, energy filling up, or being set up.
+-- A secret count means the game is hiding it: there is something to show.
+function ns.Hud_ShouldShow(points_, energyCur, energyMax, now)
     local c = ns.char
     if not c.hideIdle or not c.locked or ns.Prefs_IsShown() then return true end
-    if inCombat() or activeTimers > 0 then return true end
+    if inCombat() then return true end
     if UnitCanAttack("player", "target") and not UnitIsDead("target") then return true end
     if ns.IsSecret(points_) or points_ > 0 then return true end
     return ns.Energy_Recovering(energyCur, energyMax, now)
@@ -231,8 +202,7 @@ function ns.Hud_Update()
     local real, max = ns.Combo_Get()
     if max ~= appliedMax then ns.Hud_Apply() return end
     local cur, emax = ns.Energy_Get()
-    local active = c.showTimers and ns.Auras_Active(c, now) or {}
-    if not ns.Hud_ShouldShow(real, cur, emax, #active, now) then
+    if not ns.Hud_ShouldShow(real, cur, emax, now) then
         hud:SetAlpha(0)
         return
     end
@@ -240,7 +210,6 @@ function ns.Hud_Update()
     colorPoints(shownPoints(real, max, now), max)
 
     local width = totalWidth(max)
-    local top = -(c.comboHeight + GAP)
     energy:SetShown(c.showEnergy)
     if c.showEnergy then
         energy:SetMinMaxValues(0, emax)
@@ -253,9 +222,7 @@ function ns.Hud_Update()
             energy.spark:ClearAllPoints()
             energy.spark:SetPoint("CENTER", energy, "LEFT", progress * (width - 2), 0)
         end
-        top = top - c.energyHeight - GAP
     end
-    layoutTimers(active, top, width)
 end
 
 -- Energy changes feed the tick detection (Modules/Rogue/Energy.lua).
@@ -272,7 +239,7 @@ function ns.Hud_Init()
     if not hud then create() end
     local events = CreateFrame("Frame")
     for _, event in ipairs({ "UNIT_POWER_FREQUENT", "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "PLAYER_TARGET_CHANGED",
-        "PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED", "UNIT_AURA", "UNIT_SPELLCAST_SUCCEEDED" }) do
+        "PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED", "UNIT_SPELLCAST_SUCCEEDED" }) do
         register(events, event)
     end
     events:SetScript("OnEvent", function(_, event, unit, kind)

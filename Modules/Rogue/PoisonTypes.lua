@@ -65,13 +65,18 @@ function ns.ItemIcon(itemID)
     if GetItemIcon then return GetItemIcon(itemID) end
 end
 
+local function spellName(id)
+    if C_Spell and C_Spell.GetSpellName then return C_Spell.GetSpellName(id) end
+    if GetSpellInfo then return (GetSpellInfo(id)) end
+end
+
 local function knows(spell)
     return IsPlayerSpell ~= nil and IsPlayerSpell(spell) == true
 end
 
 -- The type's name in the client's language (its first rank's recipe), ours until the game answers.
 local function typeName(t)
-    return ns.SpellName(t.ranks[1].spell) or ns.L[t.name]
+    return spellName(t.ranks[1].spell) or ns.L[t.name]
 end
 
 -- What can be said about a poison type now:

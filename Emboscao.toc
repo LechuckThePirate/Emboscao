@@ -1,8 +1,8 @@
 ## Interface: 16001
 ## Title: Emboscao!!
-## Notes: Rogue toolset for WoW Forever: movable combo point bars, energy tick, Slice and Dice and bleed timers, poison and reagent reminders.
-## Notes-esES: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
-## Notes-esMX: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, duración de Hacer picadillo y sangrados, avisos de venenos y componentes.
+## Notes: Rogue toolset for WoW Forever: movable combo point bars, energy tick, poison reminders with click to apply, reagent reminders.
+## Notes-esES: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, avisos de venenos con clic para aplicarlos, avisos de componentes.
+## Notes-esMX: Herramientas de pícaro para WoW Forever: barras de puntos de combo movibles, tick de energía, avisos de venenos con clic para aplicarlos, avisos de componentes.
 ## Category: Combat
 ## Category-esES: Combate
 ## Category-esMX: Combate
@@ -21,7 +21,6 @@ Modules\Rogue\Energy.lua
 Modules\Rogue\Poisons.lua
 Modules\Rogue\PoisonTypes.lua
 Modules\Rogue\Reagents.lua
-Modules\Rogue\Auras.lua
 Modules\UI\Hud.lua
 Modules\UI\Alerts.lua
 Modules\UI\Menu.lua
