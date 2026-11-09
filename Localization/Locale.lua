@@ -12,6 +12,8 @@ local es = {
     ["Unlocked: drag the bars and the reminder, right-click them for the preferences."] =
         "Desbloqueado: arrastra las barras y el aviso, clic derecho para las preferencias.",
     ["Positions reset."] = "Posiciones restablecidas.",
+    ["Lock position"] = "Bloquear posición",
+    ["Unlock again with /apicarao unlock"] = "Para desbloquear de nuevo: /apicarao unlock",
 
     -- bars and reminder
     ["Apicarao!! -- drag to move, right-click: preferences"] = "Apicarao!! -- arrastra para mover, clic derecho: preferencias",

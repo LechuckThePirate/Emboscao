@@ -185,3 +185,18 @@ describe("Preferences", function()
         _G.ColorPickerFrame = nil
     end)
 end)
+
+describe("Padlock", function()
+    it("shows while unlocked and locks with a click", function()
+        WowMock.Reset()
+        local ns = start()
+        local lock = ns.Hud_Frame().lock
+        assert.is_true(lock:IsShown())
+        lock:Click()
+        assert.is_true(ns.char.locked)
+        assert.is_false(lock:IsShown())
+        assert.is_false(ns.Hud_Frame():IsMouseEnabled())
+        SlashCmdList.APICARAO("unlock")
+        assert.is_true(lock:IsShown())
+    end)
+end)

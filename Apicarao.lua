@@ -29,6 +29,15 @@ function ns.ApplySettings()
     ns.Alerts_Apply()
 end
 
+-- Lock or unlock the bars and the reminder (slash command, the padlock, the preferences).
+function ns.SetLocked(locked)
+    ns.char.locked = locked and true or false
+    ns.ApplySettings()
+    ns.Prefs_Refresh()
+    ns.Print(ns.char.locked and ns.L["Locked."]
+        or ns.L["Unlocked: drag the bars and the reminder, right-click them for the preferences."])
+end
+
 local announcedReady = false
 local events = CreateFrame("Frame")
 events:RegisterEvent("ADDON_LOADED")
@@ -64,11 +73,7 @@ SlashCmdList.APICARAO = function(msg)
     elseif msg == "" or msg == "prefs" or msg == "options" or msg == "config" then
         ns.Prefs_Toggle()
     elseif msg == "lock" or msg == "unlock" then
-        ns.char.locked = (msg == "lock")
-        ns.ApplySettings()
-        ns.Prefs_Refresh()
-        ns.Print(ns.char.locked and ns.L["Locked."]
-            or ns.L["Unlocked: drag the bars and the reminder, right-click them for the preferences."])
+        ns.SetLocked(msg == "lock")
     elseif msg == "reset" then
         ns.Hud_ResetPosition()
         ns.Alerts_ResetPosition()
